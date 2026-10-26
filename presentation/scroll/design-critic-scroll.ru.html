@@ -1,0 +1,674 @@
+<title>Дизайн-критик изнутри</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* One long scroll: hero → inside (six parts with examples) → how it works (five steps) → how to use → in action. */
+:root{
+  --bg:#F2F4F3; --surface:#FFFFFF; --ink:#141B24; --muted:#56606C; --line:#D9DDE0; --soft:#E8EBEC;
+  --blue:#2457C5; --blue-soft:#E3EBFA; --orange:#C45A1C; --orange-soft:#F8E6DA;
+  --blocking:#B42F25; --blocking-soft:#F6DEDB; --warning:#9A6410; --warning-soft:#F4E8CF; --note:#5D6672; --note-soft:#E6E9EC;
+  --mock:#FFFFFF; --mock-ink:#1B222B; --mock-muted:#65707C; --mock-line:#DCE0E4; --mock-soft:#F1F3F5;
+  --code-bg:#141B24; --code-ink:#D8DEE6; --code-dim:#8C98A6; --code-ok:#8FB2FF; --code-hit:#F0A06A;
+  --k:1; --out:cubic-bezier(.2,.8,.2,1);
+  --display:"Manrope",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F141A; --surface:#171E27; --ink:#E6EAEE; --muted:#A1ACB8; --line:#2A3440; --soft:#1F2833;
+    --blue:#8FB2FF; --blue-soft:#1C2A45; --orange:#F09A62; --orange-soft:#3A2618;
+    --blocking:#F08A80; --blocking-soft:#3D1D1A; --warning:#E3B35C; --warning-soft:#35290F; --note:#AAB4BF; --note-soft:#26303B;
+    --mock:#1D2530; --mock-ink:#E3E7EB; --mock-muted:#A0AAB5; --mock-line:#344150; --mock-soft:#252F3B;
+    --code-bg:#0A0E13;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F141A; --surface:#171E27; --ink:#E6EAEE; --muted:#A1ACB8; --line:#2A3440; --soft:#1F2833;
+  --blue:#8FB2FF; --blue-soft:#1C2A45; --orange:#F09A62; --orange-soft:#3A2618;
+  --blocking:#F08A80; --blocking-soft:#3D1D1A; --warning:#E3B35C; --warning-soft:#35290F; --note:#AAB4BF; --note-soft:#26303B;
+  --mock:#1D2530; --mock-ink:#E3E7EB; --mock-muted:#A0AAB5; --mock-line:#344150; --mock-soft:#252F3B;
+  --code-bg:#0A0E13;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:0 72px}
+.wrap{max-width:1040px; margin:0 auto}
+h1,h2,h3{font-family:var(--display); margin:0; text-wrap:balance}
+p{margin:0}
+code{font-family:var(--mono); font-size:.88em}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+a{color:var(--blue)}
+
+/* nav */
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:10; background:var(--bg)}
+.nav{position:sticky; top:env(safe-area-inset-top, 0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); padding-block:10px; display:flex; gap:6px; overflow-x:auto}
+.nav a{flex:none; text-decoration:none; color:var(--ink); font-size:14px; font-weight:500; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface)}
+.nav a:hover{border-color:var(--blue); color:var(--blue)}
+
+/* hero */
+.hero{padding-block:44px 28px; display:grid; gap:14px}
+.eyebrow{font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--blue)}
+.hero h1{font-size:clamp(36px,6vw,60px); font-weight:800; letter-spacing:-.025em; line-height:1.02}
+.lede{font-size:19px; color:var(--muted); max-width:62ch}
+.lede b{color:var(--ink); font-weight:600}
+.stats{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:8px}
+.stat{background:var(--surface); padding:14px 16px}
+.stat b{display:block; font-family:var(--display); font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.stat span{font-size:13px; color:var(--muted)}
+@media (max-width:720px){ .stats{grid-template-columns:repeat(2,1fr)} .stat:last-child{grid-column:span 2} }
+
+/* sections */
+section.part{padding-block:44px 8px; scroll-margin-top:60px; display:grid; gap:18px}
+.part > header{display:grid; gap:8px}
+.part h2{font-size:clamp(26px,3.6vw,34px); font-weight:800; letter-spacing:-.015em}
+.part > header p{color:var(--muted); max-width:66ch; font-size:17px}
+
+/* inside grid */
+.inside{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:900px){ .inside{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .inside{grid-template-columns:1fr} }
+.box{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; display:grid; gap:12px; align-content:start; min-width:0}
+.box h3{font-size:19px; font-weight:700; display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.box h3 small{font-family:var(--mono); font-size:12px; font-weight:400; color:var(--muted); white-space:nowrap}
+.box .what{font-size:14px; color:var(--muted)}
+.ex{display:grid; gap:8px; padding:0; margin:0; list-style:none}
+.ex li{border-top:1px solid var(--line); padding-top:8px; font-size:14px; display:grid; gap:2px}
+.ex li b{font-weight:600}
+.ex li .src{font-family:var(--mono); font-size:11.5px; color:var(--muted)}
+.ex li .arrow{color:var(--muted)}
+.sev{font-family:var(--mono); font-size:11px; font-weight:600; padding:1px 6px; border-radius:5px; white-space:nowrap}
+.sev.blocking{background:var(--blocking-soft); color:var(--blocking)}
+.sev.warning{background:var(--warning-soft); color:var(--warning)}
+.sev.note{background:var(--note-soft); color:var(--note)}
+.myth{text-decoration:line-through; text-decoration-color:var(--orange); color:var(--muted)}
+
+/* flow */
+.flow{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; counter-reset:step}
+@media (max-width:900px){ .flow{grid-template-columns:1fr} }
+.step{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:8px; align-content:start; position:relative; min-width:0}
+.step::before{counter-increment:step; content:counter(step); font-family:var(--mono); font-size:12px; font-weight:600; color:var(--blue); border:1px solid var(--blue); border-radius:999px; width:24px; height:24px; display:grid; place-items:center}
+.step b{font-family:var(--display); font-size:16px}
+.step p{font-size:14px; color:var(--muted)}
+.step .out{font-family:var(--mono); font-size:12px; color:var(--ink); background:var(--soft); border-radius:8px; padding:6px 8px; overflow-wrap:anywhere}
+.request{display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:15px}
+.bubble{background:var(--blue); color:#fff; border-radius:14px 14px 4px 14px; padding:10px 14px; font-size:15px}
+:root[data-theme="dark"] .bubble{color:#0F141A}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .bubble{color:#0F141A} }
+.rules-note{font-size:14px; color:var(--muted); max-width:80ch}
+
+/* use */
+.use{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:800px){ .use{grid-template-columns:1fr} }
+.cmd{display:grid; gap:8px}
+.cmd .line{display:flex; gap:8px; align-items:center; background:var(--code-bg); color:var(--code-ink); border-radius:10px; padding:10px 12px; font-family:var(--mono); font-size:13px; min-width:0}
+.cmd .line span{flex:1; overflow-x:auto; white-space:nowrap}
+.cmd .line button{flex:none; background:transparent; border:1px solid #3A4656; color:var(--code-ink); border-radius:6px; padding:3px 8px; font-size:12px; cursor:pointer}
+.chat{display:grid; gap:10px}
+.say{display:grid; gap:4px}
+.say .who{font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.say .bubble{justify-self:start; max-width:100%}
+.tips{display:grid; gap:6px; font-size:14px; color:var(--muted); padding-left:18px; margin:0}
+.tips b{color:var(--ink); font-weight:600}
+
+/* finding card */
+.finding{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--blocking); border-radius:12px; padding:18px; display:grid; gap:10px}
+.finding h3{font-size:18px}
+.kv{display:grid; grid-template-columns:150px 1fr; gap:6px 14px; font-size:14px; margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0; min-width:0; overflow-wrap:anywhere}
+@media (max-width:560px){ .kv{grid-template-columns:1fr} .kv dt{margin-top:6px} }
+.swatch{display:inline-block; padding:1px 8px; border-radius:5px; background:#fff; color:#9AA1AE; border:1px solid #DCE0E4; font-weight:500}
+
+/* demos */
+.demos{display:grid; gap:14px}
+.demo{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:12px}
+.demo-head{display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between}
+.demo-head h3{font-size:17px}
+.role{font-size:12px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:1px 8px}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:640px){ .pair{grid-template-columns:1fr} }
+.side{border-radius:10px; padding:12px; display:grid; gap:8px; align-content:start; min-width:0}
+.side.before{background:var(--orange-soft)} .side.after{background:var(--blue-soft)}
+.side h4{margin:0; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+.side.before h4{color:var(--orange)} .side.after h4{color:var(--blue)}
+.side .cap{font-size:13.5px}
+.rule{font-family:var(--mono); font-size:12px; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center}
+.slow{display:inline-flex; gap:8px; align-items:center; font-size:14px; cursor:pointer; border:1px solid var(--line); border-radius:999px; padding:5px 12px; background:var(--surface); width:max-content}
+.slow input{accent-color:var(--blue); margin:0}
+
+.mock{background:var(--mock); color:var(--mock-ink); border:1px solid var(--mock-line); border-radius:10px; padding:12px; font-size:14px; position:relative; min-width:0}
+.mock.tall{min-height:160px}
+.muted{color:var(--mock-muted)}
+.status{font-size:13px; min-height:1.4em; color:var(--mock-muted)}
+.status.bad{color:var(--blocking)} .status.ok{color:var(--blue)}
+.mbtn{border:1px solid var(--mock-line); background:var(--mock); color:var(--mock-ink); border-radius:8px; padding:7px 13px; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px}
+.mbtn.primary{background:#2457C5; border-color:#2457C5; color:#fff}
+.spin{display:inline-block; width:14px; height:14px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin .7s linear infinite; flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dd{position:relative; display:inline-block}
+.dd-menu{position:absolute; top:calc(100% + 6px); left:0; z-index:2; margin:0; padding:6px; list-style:none; min-width:180px; background:var(--mock); border:1px solid var(--mock-line); border-radius:10px; box-shadow:0 8px 24px rgba(10,20,30,.16); opacity:0; visibility:hidden; transform:scale(.96); transform-origin:top left}
+.dd-menu li{padding:6px 10px; border-radius:6px}
+.dd.open .dd-menu{opacity:1; visibility:visible; transform:none}
+.dd[data-v="calm"] .dd-menu{transition:opacity calc(180ms * var(--k)) ease-out, transform calc(180ms * var(--k)) var(--out), visibility 0s linear calc(180ms * var(--k))}
+.dd.open[data-v] .dd-menu{transition-delay:0s}
+.rc{display:grid; gap:8px}
+.rcard{display:flex; gap:10px; align-items:flex-start; border:1px solid var(--mock-line); border-radius:10px; padding:9px 11px; background:var(--mock)}
+.rcard input{margin:3px 0 0; accent-color:#2457C5}
+.rcard b{display:block; font-weight:600} .rcard span{color:var(--mock-muted); font-size:13px}
+label.rcard{cursor:pointer}
+label.rcard:has(input:checked){border-color:#2457C5; box-shadow:inset 0 0 0 1px #2457C5}
+.inp{border:1px solid var(--mock-line); border-radius:8px; padding:8px 10px; background:var(--mock); color:var(--mock-ink); font:inherit; font-size:14px; width:100%}
+.fl{position:relative}
+.fl .inp{padding:22px 11px 6px; line-height:20px}
+.fl label{position:absolute; left:12px; top:6px; font-size:15px; line-height:20px; color:var(--mock-muted); pointer-events:none; transform-origin:left top; transform:translateY(9px); transition:transform calc(160ms * var(--k)) var(--out), color calc(160ms * var(--k)) ease-out}
+.fl .inp::placeholder{color:transparent; transition:color calc(160ms * var(--k)) ease-out}
+.fl .inp:focus::placeholder{color:var(--mock-muted)}
+.fl .inp:focus + label,.fl .inp:not(:placeholder-shown) + label{transform:translateY(-1px) scale(.8)}
+.fl .inp:focus + label{color:var(--blue)}
+.fl .inp:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 1px var(--blue)}
+.mail{display:flex; justify-content:space-between; gap:8px; align-items:center; padding:7px 0; border-bottom:1px solid var(--mock-line); font-size:13.5px}
+.confirm{display:flex; gap:6px; align-items:center; font-size:13px}
+.toast{margin-top:10px; background:#1B222B; color:#fff; border-radius:8px; padding:8px 12px; font-size:13px; display:flex; justify-content:space-between; gap:10px; align-items:center}
+.toast button{background:none; border:0; color:#9DB8F5; font-weight:600; cursor:pointer; padding:0}
+.pop{position:relative; display:inline-block}
+.pop-panel{position:absolute; top:calc(100% + 6px); left:0; z-index:2; width:min(230px,70vw); background:var(--mock); border:1px solid var(--mock-line); border-radius:10px; padding:8px; box-shadow:0 8px 24px rgba(10,20,30,.16)}
+.pop-panel textarea{width:100%; height:60px; resize:none; font:inherit; font-size:13px; border:1px solid var(--mock-line); border-radius:6px; padding:6px; background:var(--mock); color:var(--mock-ink)}
+
+/* regression */
+.shots{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+@media (max-width:700px){ .shots{grid-template-columns:1fr} }
+.shots figure{margin:0; display:grid; gap:6px}
+.shots img{width:100%; height:auto; border-radius:8px; border:1px solid var(--line); background:#fff; display:block}
+.shots figcaption{font-size:13px; color:var(--muted)}
+.nums{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+@media (max-width:700px){ .nums{grid-template-columns:1fr} }
+.num{background:var(--soft); border-radius:10px; padding:12px 14px; display:grid; gap:2px}
+.num b{font-family:var(--display); font-size:24px; font-weight:800; font-variant-numeric:tabular-nums}
+.num span{font-size:13.5px; color:var(--muted)}
+.verdict{border-left:3px solid var(--blue); padding:2px 0 2px 14px; font-size:15px; max-width:80ch}
+.tokens{width:100%; border-collapse:collapse; font-size:14px}
+.tokens th,.tokens td{text-align:left; padding:8px 8px; border-bottom:1px solid var(--line); vertical-align:top}
+.tokens th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.tokens td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+.scroll{overflow-x:auto}
+.chip{display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:-1px; margin-right:6px; border:1px solid var(--line)}
+
+footer.end{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; display:grid; gap:6px; max-width:80ch}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+/* story pass: one idea per band, plain words, big type */
+body{font-size:18px; line-height:1.6}
+.wrap{max-width:920px}
+.hero{padding-block:88px 56px; gap:22px}
+.hero h1{font-size:clamp(40px,7.5vw,76px); line-height:1.02}
+.lede{font-size:clamp(19px,2.4vw,23px); max-width:34ch; color:var(--muted)}
+.lede b{color:var(--ink)}
+section.part{padding-block:96px 0; gap:36px}
+.part h2{font-size:clamp(30px,4.6vw,46px); letter-spacing:-.02em; line-height:1.1}
+.part > header p{font-size:19px; max-width:44ch}
+
+/* what it knows */
+.knows{display:grid; grid-template-columns:repeat(2,1fr); gap:20px}
+@media (max-width:680px){ .knows{grid-template-columns:1fr} }
+.know{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; display:grid; gap:14px; align-content:start}
+.know .big{font-family:var(--display); font-size:56px; font-weight:800; letter-spacing:-.03em; line-height:1; color:var(--blue)}
+.know h3{font-size:22px; font-weight:700}
+.know p{font-size:16.5px; color:var(--muted)}
+.know q{color:var(--ink); quotes:"«" "»"}
+.fingers{display:flex; gap:10px; align-items:flex-end}
+.fingers span{display:grid; place-items:center; border-radius:10px; border:2px dashed var(--blue); color:var(--blue); font-size:13px; font-weight:600}
+.pale{display:inline-flex; gap:8px; align-items:center; font-weight:600}
+.pale i{font-style:normal; padding:4px 10px; border-radius:8px; background:#fff; border:1px solid #DCE0E4}
+
+/* how: chat */
+.steps3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+@media (max-width:680px){ .steps3{grid-template-columns:1fr} }
+.s3{display:grid; gap:8px}
+.s3 .n{font-family:var(--display); font-weight:800; font-size:15px; color:var(--blue)}
+.s3 b{font-family:var(--display); font-size:21px; line-height:1.2}
+.s3 p{font-size:16px; color:var(--muted)}
+.convo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:20px; align-items:start}
+@media (max-width:760px){ .convo{grid-template-columns:1fr} }
+.screen{background:#FFFFFF; color:#1B222B; border:1px solid #DCE0E4; border-radius:18px; padding:22px; display:grid; gap:12px; box-shadow:0 10px 30px rgba(20,27,36,.08)}
+.screen .t{font-family:var(--display); font-weight:700; font-size:19px}
+.screen .fld{display:grid; gap:4px}
+.screen .fld small{color:#B4BAC4; font-size:13px}
+.screen .fld div{border:1px solid #DCE0E4; border-radius:8px; padding:9px 11px; font-size:15px}
+.screen .tiny{justify-self:start; background:#F59200; color:#fff; border-radius:7px; padding:5px 12px; font-size:13px; font-weight:600}
+.screen .cap{font-size:12px; color:#8A929C}
+.reply{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:22px; display:grid; gap:16px}
+.reply .from{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.item{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; align-items:baseline}
+.dot{width:12px; height:12px; border-radius:50%; display:inline-block; transform:translateY(1px)}
+.dot.r{background:#D64035} .dot.y{background:#E0A526} .dot.g{background:#9AA3AD}
+.item b{font-size:17px}
+.item p{grid-column:2; font-size:15.5px; color:var(--muted)}
+.item em{font-style:normal; font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase}
+.item em.r{color:var(--blocking)} .item em.y{color:var(--warning)} .item em.g{color:var(--note)}
+.reply .why{font-size:14px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px}
+
+/* use */
+.asks{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+@media (max-width:680px){ .asks{grid-template-columns:1fr} }
+.ask{display:grid; gap:8px}
+.ask .who{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.ask .bubble{justify-self:start; font-size:17px; padding:12px 16px}
+details.setup{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:14px 18px}
+details.setup summary{cursor:pointer; font-weight:600; font-size:16px}
+details.setup .cmd{margin-top:12px}
+
+/* action */
+.demos{gap:32px}
+.demo{padding:26px; gap:18px; border-radius:20px}
+.demo-head h3{font-size:22px}
+.side{padding:16px; gap:10px}
+.side .cap{font-size:15.5px}
+.story{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; display:grid; gap:18px}
+.story h3{font-size:24px}
+.story > p{font-size:17px; color:var(--muted); max-width:52ch}
+.ba{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+@media (max-width:620px){ .ba{grid-template-columns:1fr} }
+.ba figure{margin:0; display:grid; gap:8px}
+.ba img{width:100%; height:auto; border-radius:10px; border:1px solid var(--line); background:#fff; display:block}
+.ba figcaption{font-size:14px; color:var(--muted)}
+.said{font-size:18px; border-left:4px solid var(--blue); padding:2px 0 2px 16px; max-width:50ch}
+footer.end{margin-top:96px; font-size:15px}
+
+/* library */
+.much{display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+@media (max-width:820px){ .much{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:480px){ .much{grid-template-columns:repeat(2,1fr)} }
+.much div{background:var(--surface); padding:18px 16px; display:grid; gap:2px; align-content:start}
+.much b{font-family:var(--display); font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.1}
+.much span{font-size:14px; color:var(--muted); line-height:1.35}
+.lib{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:28px; background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; align-items:start}
+@media (max-width:820px){ .lib{grid-template-columns:1fr} }
+.lib-ask{display:grid; gap:14px}
+.lib-label{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.lib-reqs{display:grid; gap:8px}
+.req{text-align:left; border:1px solid var(--line); background:var(--bg); border-radius:14px; padding:10px 14px; font-size:15.5px; cursor:pointer; line-height:1.35}
+.req[aria-checked="true"]{background:var(--blue); border-color:var(--blue); color:var(--surface)}
+.lib-took{display:grid; gap:2px; margin-top:6px}
+.lib-took b{font-family:var(--display); font-size:44px; font-weight:800; color:var(--orange); line-height:1; font-variant-numeric:tabular-nums}
+.lib-took span{font-size:15px; color:var(--muted)}
+.lib-list{font-size:15px; color:var(--ink); line-height:1.55}
+.shelves{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:26px 28px; min-width:0}
+@media (max-width:560px){ .shelves{grid-template-columns:1fr} }
+.shelf{display:grid; gap:8px; min-width:0}
+.shelf-name{font-size:14px; color:var(--muted)}
+.shelf-name b{color:var(--ink); font-weight:600}
+.books{display:flex; flex-wrap:wrap; align-items:flex-end; gap:4px; border-bottom:8px solid #8A7660; padding-bottom:0; min-height:96px}
+.book{width:22px; border-radius:3px 3px 1px 1px; background:var(--soft); border:1px solid var(--line); transition:background-color .25s ease-out, transform .25s var(--out)}
+.book.wide{width:44px}
+.book.lit{transform:translateY(-6px)}
+.book.lit.c-router{background:#141B24; border-color:#141B24}
+.book.lit.c-method{background:#2457C5; border-color:#2457C5}
+.book.lit.c-lens{background:#E4803A; border-color:#E4803A}
+.book.lit.c-tpl{background:#5B8BEF; border-color:#5B8BEF}
+.book.lit.c-prod{background:#F2B27A; border-color:#F2B27A}
+.book.lit.c-brain{background:#1E8C63; border-color:#1E8C63}
+:root[data-theme="dark"] .book.lit.c-router{background:#E6EAEE; border-color:#E6EAEE}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .book.lit.c-router{background:#E6EAEE; border-color:#E6EAEE} }
+@media (prefers-reduced-motion: reduce){ .book{transition:none} .book.lit{transform:none} }
+
+.lib-stats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.lib-stats div{background:var(--bg); border-radius:12px; padding:10px 12px; display:grid; gap:0}
+.lib-stats b{font-family:var(--display); font-size:24px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.15}
+.lib-stats span{font-size:13.5px; color:var(--muted); line-height:1.3}
+
+/* next */
+.next{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px}
+@media (max-width:820px){ .next{grid-template-columns:1fr} }
+.nx{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:26px; display:grid; gap:14px; align-content:start}
+.nx .tag{justify-self:start; font-size:13px; font-weight:600; border-radius:999px; padding:3px 12px; border:1px solid var(--orange); color:var(--orange)}
+.nx .tag.ready{border-color:var(--blue); color:var(--blue)}
+.nx h3{font-size:22px; line-height:1.2}
+.nx p{font-size:16px; color:var(--muted)}
+.nx ul{margin:0; padding-left:18px; display:grid; gap:6px; font-size:15.5px}
+
+/* roles */
+.roles{display:flex; flex-wrap:wrap; gap:8px}
+.rtab{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:9px 18px; font-size:16px; font-weight:600; cursor:pointer}
+.rtab[aria-selected="true"]{background:var(--ink); border-color:var(--ink); color:var(--bg)}
+.rpanel{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+@media (max-width:680px){ .rpanel{grid-template-columns:1fr} }
+.qa{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:18px; display:grid; gap:10px; align-content:start}
+.qa .bubble{justify-self:start; font-size:16.5px; padding:10px 15px; max-width:100%}
+.qa p{font-size:15.5px; color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Плагин для Claude</p>
+    <h1>Дизайн-критик</h1>
+    <p class="lede">Опытный дизайнер-ревьюер внутри Claude. <b>Показываете экран — получаете честный разбор:</b> что не так, почему и как исправить.</p>
+  </header>
+
+  <nav class="nav" aria-label="Разделы">
+    <a href="#inside">Что внутри</a><a href="#knows">Что он знает</a><a href="#how">Как работает</a><a href="#use">Как просить</a><a href="#action">В деле</a><a href="#next">Что дальше</a>
+  </nav>
+
+  <section class="part" id="inside">
+    <header>
+      <p class="eyebrow">Что внутри</p>
+      <h2>Плагин — библиотека, Claude — библиотекарь</h2>
+      <p>Внутри целая библиотека знаний о дизайне. Claude не читает её всю: под каждый запрос он берёт с полки только нужные тома.</p>
+    </header>
+    <div class="much">
+      <div><b>38</b><span>томов</span></div>
+      <div><b>410</b><span>правил</span></div>
+      <div><b>266</b><span>проверок</span></div>
+      <div><b>72</b><span>факта о восприятии</span></div>
+      <div><b>79</b><span>разобранных мифов</span></div>
+      <div><b>125 тыс.</b><span>слов — как две толстые книги</span></div>
+    </div>
+    <div class="lib">
+      <div class="lib-ask">
+        <p class="lib-label">Выберите запрос</p>
+        <div class="lib-reqs" role="radiogroup" aria-label="Запрос">
+          <button class="req" role="radio" aria-checked="true" data-req="review">«Сделай ревью формы оплаты в Reboost»</button>
+          <button class="req" role="radio" aria-checked="false" data-req="build">«Сверстай меню сортировки»</button>
+          <button class="req" role="radio" aria-checked="false" data-req="spec">«Что я забыл в задаче про экран заказов?»</button>
+          <button class="req" role="radio" aria-checked="false" data-req="test">«Сделай тест-кейсы по оплате»</button>
+        </div>
+        <div class="lib-took"><b id="lib-count">0 из 38</b><span>томов Claude снял с полки</span></div>
+        <div class="lib-stats" id="lib-stats"></div>
+        <p class="lib-list" id="lib-list"></p>
+      </div>
+      <div class="shelves" id="shelves" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="part" id="knows">
+    <header>
+      <p class="eyebrow">Что он знает</p>
+      <h2>Четыре вещи, которые у него в голове</h2>
+    </header>
+    <div class="knows">
+      <article class="know">
+        <div class="big">4</div>
+        <h3>Как люди видят и запоминают</h3>
+        <p>Например: человек держит в голове около четырёх вещей, а не семь, как принято думать. Поэтому <q>сравнивать больше четырёх тарифов сразу тяжело</q>.</p>
+      </article>
+      <article class="know">
+        <div class="fingers" aria-hidden="true"><span style="width:28px;height:28px;font-size:11px">24</span><span style="width:44px;height:44px">44</span></div>
+        <h3>Правила хорошего интерфейса</h3>
+        <p>Например: <q>в кнопку должно быть легко попасть пальцем</q> — на телефоне это квадрат примерно 44 × 44 точки.</p>
+      </article>
+      <article class="know">
+        <div class="pale" aria-hidden="true"><i style="color:#B4BAC4">Адрес</i><span style="color:var(--muted)">→</span><i style="color:#4A5360">Адрес</i></div>
+        <h3>Доступность для всех</h3>
+        <p>Например: <q>текст должен читаться даже на солнце и людьми со слабым зрением</q>. Бледно-серое на белом — не годится.</p>
+      </article>
+      <article class="know">
+        <div class="big" style="color:var(--orange)">Reboost</div>
+        <h3>Решения вашего продукта</h3>
+        <p>Например: <q>в Reboost красный цвет — только для того, что нельзя отменить</q>. Каждый продукт подключается отдельно.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="part" id="how">
+    <header>
+      <p class="eyebrow">Как работает</p>
+      <h2>Вы показываете — он разбирает</h2>
+    </header>
+    <div class="steps3">
+      <div class="s3"><span class="n">1</span><b>Показываете экран</b><p>Скриншот, ссылку на макет или на страницу</p></div>
+      <div class="s3"><span class="n">2</span><b>Он смотрит глазами пользователя</b><p>И сверяет со всем, что знает</p></div>
+      <div class="s3"><span class="n">3</span><b>Вы получаете список</b><p>Что исправить, почему и насколько срочно</p></div>
+    </div>
+    <div class="convo">
+      <div class="screen" aria-label="Пример экрана оплаты">
+        <span class="t">Оплата</span>
+        <div class="fld"><small>Номер карты</small><div>4276 1600 1234 5678</div></div>
+        <div class="fld"><small>Имя на карте</small><div>Anna Smith</div></div>
+        <span class="tiny">Оплатить</span>
+        <span class="cap">пример экрана</span>
+      </div>
+      <div class="reply">
+        <span class="from">Ответ критика · пример</span>
+        <div class="item"><span class="dot r"></span><b>Подписи полей почти не видно</b><p>Серый на белом читается с трудом, особенно на солнце. Сделайте подписи темнее.</p><em class="r" style="grid-column:2">Исправить до релиза</em></div>
+        <div class="item"><span class="dot y"></span><b>Кнопка «Оплатить» маленькая</b><p>В неё трудно попасть пальцем. Сделайте её во всю ширину.</p><em class="y" style="grid-column:2">Желательно</em></div>
+        <div class="item"><span class="dot g"></span><b>Нет подсказки, что платёж защищён</b><p>Одна строка рядом с кнопкой снимет тревогу.</p><em class="g" style="grid-column:2">Мелочь</em></div>
+        <p class="why">У каждого замечания есть ссылка на правило — спорить о вкусе не нужно.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="use">
+    <header>
+      <p class="eyebrow">Как просить</p>
+      <h2>Обычными словами — для каждой роли своё</h2>
+      <p>Критик сам понимает, что от него нужно. Чтобы учесть продукт, назовите его: «в Reboost».</p>
+    </header>
+    <div class="roles" role="tablist" aria-label="Роль">
+      <button class="rtab" role="tab" aria-selected="true" aria-controls="r-design" id="t-design">Дизайнер</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-dev" id="t-dev">Разработчик</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-pm" id="t-pm">Менеджер</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-qa" id="t-qa">Тестировщик</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-any" id="t-any">Любой</button>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-design" aria-labelledby="t-design">
+      <div class="qa"><span class="bubble">Посмотри мой макет онбординга</span><p>→ список, что исправить до передачи в разработку, от срочного к мелочам</p></div>
+      <div class="qa"><span class="bubble">Сделай три варианта главного экрана</span><p>→ три разных направления и чем каждое хорошо</p></div>
+      <div class="qa"><span class="bubble">Я ничего не забыл на этом экране?</span><p>→ каких состояний не хватает: пусто, загрузка, ошибка, нет доступа</p></div>
+      <div class="qa"><span class="bubble">Слишком громко, сделай поспокойнее</span><p>→ правки по шагам и объяснение, что именно «кричит»</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-dev" aria-labelledby="t-dev" hidden>
+      <div class="qa"><span class="bubble">Сверстай меню сортировки как надо</span><p>→ готовый код: плавное появление, работа с клавиатуры, доступность</p></div>
+      <div class="qa"><span class="bubble">Проверь мою ветку перед ревью</span><p>→ что поправить в коде интерфейса и почему</p></div>
+      <div class="qa"><span class="bubble">Почему кнопка ощущается тормозной?</span><p>→ нет отклика на нажатие — и как его добавить</p></div>
+      <div class="qa"><span class="bubble">Какие состояния нужны этому компоненту?</span><p>→ загрузка, ошибка, пусто, недоступно — с примерами</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-pm" aria-labelledby="t-pm" hidden>
+      <div class="qa"><span class="bubble">Что я забыл в задаче про экран заказов?</span><p>→ сценарии и состояния, которых нет в задаче</p></div>
+      <div class="qa"><span class="bubble">Напиши критерии приёмки для карточки товара</span><p>→ пункты, которые можно проверить, а не «должно быть удобно»</p></div>
+      <div class="qa"><span class="bubble">Можно, чтобы страховка была уже включена?</span><p>→ нет: платную опцию нельзя включать за пользователя — и почему</p></div>
+      <div class="qa"><span class="bubble">Как понять, что редизайн удался?</span><p>→ что измерять, от какой цифры и когда откатывать</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-qa" aria-labelledby="t-qa" hidden>
+      <div class="qa"><span class="bubble">Что проверить в оплате в Reboost?</span><p>→ список проверок с шагами и ожидаемым результатом</p></div>
+      <div class="qa"><span class="bubble">Сделай тест-кейсы для TestRail</span><p>→ таблица, которую можно сразу загрузить</p></div>
+      <div class="qa"><span class="bubble">Оформи этот баг</span><p>→ баг-репорт со ссылкой на правило — спорить не придётся</p></div>
+      <div class="qa"><span class="bubble">Проверь страницу на телефоне</span><p>→ обрезанный текст, мелкие кнопки, бледные надписи</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-any" aria-labelledby="t-any" hidden>
+      <div class="qa"><span class="bubble">Объясни, почему этот экран неудобный</span><p>→ простыми словами, со ссылкой на то, как устроено восприятие</p></div>
+      <div class="qa"><span class="bubble">Сравни два варианта, какой лучше?</span><p>→ выбор с причинами, а не «мне больше нравится»</p></div>
+      <div class="qa"><span class="bubble">Что поправить в первую очередь?</span><p>→ самое срочное и самое дешёвое сверху</p></div>
+    </div>
+    <details class="setup">
+      <summary>Как подключить — для того, кто настраивает</summary>
+      <div class="cmd">
+        <div class="line"><span>claude plugin marketplace add gorelikroman/design-critic</span><button data-copy="claude plugin marketplace add gorelikroman/design-critic">Копировать</button></div>
+        <div class="line"><span>claude plugin install design-critic@design-critic</span><button data-copy="claude plugin install design-critic@design-critic">Копировать</button></div>
+      </div>
+    </details>
+  </section>
+
+  <section class="part" id="action">
+    <header>
+      <p class="eyebrow">В деле</p>
+      <h2>Попробуйте сами</h2>
+      <p>Слева — как часто получается, справа — как делает критик. Всё нажимается.</p>
+    </header>
+
+    <div class="demos">
+      <article class="demo">
+        <div class="demo-head"><h3>Меню</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Обычно</h4><div class="mock tall"><div class="dd"><button class="mbtn" data-act="dd" aria-haspopup="menu" aria-expanded="false">Сортировка ▾</button><ul class="dd-menu"><li>Сначала новые</li><li>Сначала дешёвые</li><li>По рейтингу</li></ul></div></div><p class="cap">Выскакивает рывком</p></div>
+          <div class="side after"><h4>С критиком</h4><div class="mock tall"><div class="dd" data-v="calm"><button class="mbtn" data-act="dd" aria-haspopup="menu" aria-expanded="false">Сортировка ▾</button><ul class="dd-menu"><li>Сначала новые</li><li>Сначала дешёвые</li><li>По рейтингу</li></ul></div></div><p class="cap">Мягко раскрывается от кнопки</p></div>
+        </div>
+      </article>
+
+      <article class="demo">
+        <div class="demo-head"><h3>Поле ввода</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Обычно</h4><div class="mock" style="display:grid; gap:8px"><input class="inp" id="b-mail" placeholder="Email" value="anna@exa" aria-label="Email"><input class="inp" id="b-tel" placeholder="Телефон" aria-label="Телефон"></div><p class="cap">Начали печатать — и уже не видно, что это за поле</p></div>
+          <div class="side after"><h4>С критиком</h4><div class="mock" style="display:grid; gap:8px"><div class="fl"><input class="inp" id="a-mail" type="email" placeholder="name@example.com" value="anna@exa"><label for="a-mail">Email</label></div><div class="fl"><input class="inp" id="a-tel" type="tel" placeholder="+7 999 123-45-67"><label for="a-tel">Телефон</label></div></div><p class="cap">Название поля всегда на виду</p></div>
+        </div>
+      </article>
+
+      <article class="demo">
+        <div class="demo-head"><h3>Кнопка оплаты</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Обычно</h4><div class="mock pay" data-v="naive"><button class="mbtn primary" data-act="pay">Оплатить 2 490 ₽</button><p class="status" data-status>Нажмите несколько раз подряд</p></div><p class="cap">Можно случайно заплатить дважды</p></div>
+          <div class="side after"><h4>С критиком</h4><div class="mock pay" data-v="smart"><button class="mbtn primary" data-act="pay">Оплатить 2 490 ₽</button><p class="status" data-status>Нажмите несколько раз подряд</p></div><p class="cap">Второе нажатие не пройдёт</p></div>
+        </div>
+      </article>
+    </div>
+
+    <article class="story">
+      <h3>Он замечает то, что пропустил человек</h3>
+      <p>В Reboost кто-то в коде случайно уменьшил главную кнопку. Автотест сравнил экраны до и после, а критик объяснил, что именно не так.</p>
+      <div class="ba">
+        <figure><img src="data:image/png;base64,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" alt="До: большая оранжевая кнопка Continue во всю ширину" width="390" height="208"><figcaption>До</figcaption></figure>
+        <figure><img src="data:image/png;base64,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" alt="После: кнопка Continue стала маленькой" width="390" height="178"><figcaption>После</figcaption></figure>
+      </div>
+      <p class="said">«Так нельзя: главная кнопка стала незаметной, и в неё трудно попасть пальцем».</p>
+    </article>
+  </section>
+
+  <section class="part" id="next">
+    <header>
+      <p class="eyebrow">Что дальше</p>
+      <h2>Ещё два продукта и расширение для браузера</h2>
+      <p>Reboost уже подключён: критик знает его дизайн-систему и 99 принятых решений. Дальше — так же глубоко для остальных.</p>
+    </header>
+    <div class="next">
+      <article class="nx">
+        <span class="tag">следующий</span>
+        <h3>Полный разбор DoktorABC</h3>
+        <p>Критик выучит продукт так же, как Reboost.</p>
+        <ul>
+          <li>дизайн-система из Figma и токены</li>
+          <li>разбор ключевых экранов и журнал решений</li>
+          <li>особые правила медицины: спокойный тон, никаких «прыгающих» анимаций</li>
+        </ul>
+      </article>
+      <article class="nx">
+        <span class="tag">следующий</span>
+        <h3>Полный разбор Mobile App</h3>
+        <p>То же самое для мобильного приложения.</p>
+        <ul>
+          <li>дизайн-система и решения продукта</li>
+          <li>правила iOS и Android</li>
+          <li>проверка по скриншотам с телефона: что срезано, что мелко, что бледно</li>
+        </ul>
+      </article>
+      <article class="nx">
+        <span class="tag ready">основа готова</span>
+        <h3>Расширение для браузера</h3>
+        <p>Для тестировщиков и ревью: открыли страницу — нажали кнопку.</p>
+        <ul>
+          <li>подсвечивает прямо на странице обрезанный текст, мелкие кнопки, бледные надписи</li>
+          <li>сравнивает страницу с макетом в Figma</li>
+          <li>оформляет баг в один клик</li>
+        </ul>
+        <p>Проверки уже работают: их прогнали по всем 349 компонентам Reboost.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="end">
+    <p>Внутри — 410 правил и 72 факта о том, как люди видят и думают. Уже прогнан по всем 349 примерам компонентов Reboost.</p>
+  </footer>
+</div>
+
+
+<script>
+(function(){
+const stat=(root,text,cls)=>{const s=root.querySelector('[data-status]'); if(s){s.textContent=text; s.className='status'+(cls?' '+cls:'')}};
+
+document.addEventListener('click',e=>{
+  document.querySelectorAll('.dd.open').forEach(d=>{if(!d.contains(e.target)){d.classList.remove('open'); d.querySelector('button').setAttribute('aria-expanded','false')}});
+  document.querySelectorAll('.pop').forEach(p=>{
+    const panel=p.querySelector('.pop-panel'); if(panel.hidden||p.contains(e.target)) return;
+    panel.hidden=true; const ta=panel.querySelector('textarea'), had=ta.value.trim().length>0, root=p.closest('.mock');
+    if(p.dataset.v==='lose'){ta.value=''; stat(root,had?'Черновик потерян':'Окно закрыто',had?'bad':'')}
+    else stat(root,had?'Окно закрыто, черновик сохранён':'Окно закрыто',had?'ok':'');
+  });
+  const c=e.target.closest('[data-copy]');
+  if(c){const t=c.dataset.copy; const done=()=>{c.textContent='Скопировано'; setTimeout(()=>c.textContent='Копировать',1500)};
+    try{navigator.clipboard.writeText(t).then(done,()=>{const r=document.createRange(); r.selectNodeContents(c.previousElementSibling); const s=getSelection(); s.removeAllRanges(); s.addRange(r)})}catch(err){}
+    return}
+  const t=e.target.closest('[data-act]'); if(!t) return; const act=t.dataset.act;
+  if(act==='dd'){const d=t.closest('.dd'); t.setAttribute('aria-expanded',d.classList.toggle('open'))}
+  if(act==='miss'&&e.target.tagName!=='INPUT'){const root=t.closest('.mock'); stat(root,'Клик мимо кружка — выбор не изменился','bad'); clearTimeout(root._t); root._t=setTimeout(()=>stat(root,''),1600)}
+  if(act==='pay'){const root=t.closest('.pay');
+    if(root.dataset.v==='naive'){root._n=(root._n||0)+1; stat(root,'Запросов на сервер: '+root._n); clearTimeout(root._t); root._t=setTimeout(()=>{stat(root,root._n>1?`Списано ${root._n} раза по 2 490 ₽`:'Списано 2 490 ₽',root._n>1?'bad':''); root._n=0},1200)}
+    else{if(root._busy) return; root._busy=true; t.setAttribute('aria-busy','true'); t.innerHTML='<span class="spin" aria-hidden="true"></span>Оплачиваем…'; stat(root,'Запросов на сервер: 1');
+      setTimeout(()=>{t.removeAttribute('aria-busy'); t.textContent='Оплатить 2 490 ₽'; stat(root,'Оплачено · чек на почте','ok'); root._busy=false},1500)}}
+  if(act==='arch'){const root=t.closest('[data-undo]'), row=t.closest('.mail'), box=t.parentElement;
+    if(root.dataset.undo==='b') box.innerHTML='Точно? <button class="mbtn" data-act="yes">Да</button><button class="mbtn" data-act="no">Нет</button>';
+    else{row.hidden=true; const slot=root.querySelector('.toast-slot'); slot.innerHTML=`<div class="toast"><span>«${row.firstElementChild.textContent}» в архиве</span><button data-act="undo">Отменить</button></div>`; slot._row=row; clearTimeout(slot._t); slot._t=setTimeout(()=>{slot.innerHTML=''},5000)}}
+  if(act==='yes') t.closest('.mail').hidden=true;
+  if(act==='no') t.parentElement.innerHTML='<button class="mbtn" data-act="arch">В архив</button>';
+  if(act==='undo'){const slot=t.closest('.toast-slot'); if(slot._row) slot._row.hidden=false; slot.innerHTML=''}
+  if(act==='pop'){const panel=t.closest('.pop').querySelector('.pop-panel'); panel.hidden=!panel.hidden; if(!panel.hidden) panel.querySelector('textarea').focus()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape') document.querySelectorAll('.dd.open').forEach(d=>{d.classList.remove('open'); const b=d.querySelector('button'); b.setAttribute('aria-expanded','false'); b.focus()})});
+})();
+// Library: 38 volumes on six shelves; each request lights the ones Claude reads.
+(function(){
+const SHELVES = [
+  { key:'router', name:'Маршрутизатор', cls:'c-router', wide:true, books:[['skill','Маршрутизатор: выбирает режим, роль, язык и продукт']] },
+  { key:'method', name:'Методики', cls:'c-method', books:[['m-review','Методика проверки'],['m-build','Методика создания'],['m-spec','Методика требований'],['m-test','Методика тестов'],['m-lang','Правило языка ответа']] },
+  { key:'lens', name:'Линзы — 410 правил', cls:'c-lens', books:[
+    ['l01','Иерархия',44],['l02','Шрифты',22],['l03','Цвет',23],['l04','Задача экрана',16],['l05','Состояния и ошибки',44],['l06','Доверие и выбор',27],['l07','Тексты',19],
+    ['l08','Формы',27],['l09','Анимация',71],['l10','Доступность',34],['l11','Компоненты',41],['l12','Мобильные',20],['l13','Продукт и метрики',6],['l14','Устройства',16] ] },
+  { key:'tpl', name:'Шаблоны ответа', cls:'c-tpl', books:[
+    ['t-card','Карточка экрана'],['t-find','Находка'],['t-report','Отчёт'],['t-log','Журнал решений'],['t-board','Доска решений'],['t-brief','Бриф'],
+    ['t-note','Записка о сборке'],['t-spec','UX-спека'],['t-plan','Тест-план'],['t-bug','Баг-репорт'],['t-setup','Настройка проекта'] ] },
+  { key:'prod', name:'Продукты', cls:'c-prod', books:[['p-readme','Как устроены продукты'],['p-tpl1','Шаблон продукта'],['p-tpl2','Шаблон решений'],['p-rb1','Reboost: продукт'],['p-rb2','Reboost: решения']] },
+  { key:'brain', name:'Мозг и каталог', cls:'c-brain', wide:true, books:[['brain','Как люди видят и думают: 72 факта, 79 мифов'],['cat','Каталог: 266 проверок']] },
+];
+const REQ = {
+  review:['skill','m-review','l03','l05','l06','l07','l08','l10','t-card','t-find','t-report','t-board','p-rb1','p-rb2','brain'],
+  build:['skill','m-build','l09','l10','l11','t-note','brain'],
+  spec:['skill','m-spec','l05','l13','t-spec','cat'],
+  test:['skill','m-test','l08','l10','t-plan','t-bug','cat'],
+};
+const host = document.getElementById('shelves');
+if(!host) return;
+const names = {}, rules = {};
+const EXTRA = { brain:['факта о восприятии',72], cat:['проверок с ID',266], 'p-rb2':['решений Reboost',99] };
+host.innerHTML = SHELVES.map(s => `<div class="shelf"><span class="shelf-name"><b>${s.name}</b> · ${s.books.length}</span><div class="books">${
+  s.books.map(([id,title,n], i) => { names[id] = title; if(n) rules[id] = n;
+    const h = 64 + ((i * 37 + id.length * 11) % 30);
+    return `<span class="book ${s.cls}${s.wide ? ' wide' : ''}" data-id="${id}" title="${title}" style="height:${h}px"></span>`; }).join('')
+}</div></div>`).join('');
+const total = SHELVES.reduce((n, s) => n + s.books.length, 0);
+function pick(key){
+  const lit = new Set(REQ[key]);
+  host.querySelectorAll('.book').forEach(b => b.classList.toggle('lit', lit.has(b.dataset.id)));
+  document.getElementById('lib-count').textContent = `${lit.size} из ${total}`;
+  document.getElementById('lib-list').textContent = REQ[key].map(id => names[id]).join(' · ');
+  const r = REQ[key].reduce((n, id) => n + (rules[id] || 0), 0);
+  const tpl = REQ[key].filter(id => id.startsWith('t-')).length;
+  const parts = [[r, 'из 410 правил']];
+  for (const id of REQ[key]) if (EXTRA[id]) parts.push([EXTRA[id][1], EXTRA[id][0]]);
+  if (tpl) parts.push([tpl, tpl === 1 ? 'шаблон ответа' : tpl < 5 ? 'шаблона ответа' : 'шаблонов ответа']);
+  document.getElementById('lib-stats').innerHTML = parts.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('');
+  document.querySelectorAll('.req').forEach(r => r.setAttribute('aria-checked', r.dataset.req === key));
+}
+document.querySelectorAll('.req').forEach(r => r.addEventListener('click', () => pick(r.dataset.req)));
+pick('review');
+
+// Role tabs
+const tabs = [...document.querySelectorAll('.rtab')];
+function show(tab){
+  tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); document.getElementById(t.getAttribute('aria-controls')).hidden = !on; });
+}
+tabs.forEach(t => t.addEventListener('click', () => show(t)));
+document.querySelector('.roles').addEventListener('keydown', e => {
+  if(!['ArrowRight','ArrowLeft'].includes(e.key)) return;
+  const i = tabs.indexOf(document.activeElement); if(i < 0) return;
+  const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); show(n);
+});
+})();
+</script>

@@ -1,0 +1,14 @@
+{
+  "name": "design-critic-products",
+  "owner": {
+    "name": "gorelikroman"
+  },
+  "description": "Private product packs for design-critic: one plugin per product.",
+  "plugins": [
+    {
+      "name": "design-critic-reboost",
+      "source": "./plugins/design-critic-reboost",
+      "description": "Reboost product layer for design-critic"
+    }
+  ]
+}
