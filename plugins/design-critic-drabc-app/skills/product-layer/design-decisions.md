@@ -6,6 +6,7 @@
 > A row without a reference screen does not exist. Lifecycle: `method/review-method.md` §5.
 >
 > Created: 2026-10-08 · Rewritten: 2026-11-11 from the owner's answers on four decision boards ·
+> Updated: 2026-11-15 with the round-3 board (hard rules + open questions) ·
 > Project owner: Roman · Figma: `3GnJD8QN587Y912O3F15Cx` ·
 > Last review: `reviews/2026-11-10-consistency-audit/` (124 screens of the READY TO DEV section)
 >
@@ -46,6 +47,7 @@ Status is editorial (is this row a rule of the project). It is not an audit resu
 - 2026-11-01 — critic audit board (d0–d7, findings): text-safe brand colours, links = brand colour, copy and screen fixes.
 - 2026-11-10 — consistency board, round 1 (36 items): typography, spacing, radius, colour, components, hygiene.
 - 2026-11-11 — consistency board, round 2 (13 of 14 items): headers, section gap, display sizes, card outline + shadow, kit changes.
+- 2026-11-15 — rules board, round 3 (26 items): hard-rule list reviewed rule by rule (14 kept, 2 moved to warnings); open questions Q1–Q7, Q9, Q12 answered; Q8 kept open.
 
 ---
 
@@ -54,22 +56,24 @@ Status is editorial (is this row a rule of the project). It is not an audit resu
 | # | Decision | Why | Reference | Violations | Status |
 |---|---|---|---|---|---|
 | COL-1 | Brand = lime **#7ABA47** (`fill/brand`, `icon/brand`); it is a fill and icon colour, never text | owner's brand; lime text measures 2.35:1 | Foundations `3066:2191`; `semantic` collection | — | confirmed (owner, 2026-10-07; narrowed 2026-11-01 · d2) |
-| COL-2 | Primary button = **button green #38A165** (`interactive/primary`), pressed #2D8151, white label | lime is too light for a white label; owner picked the darker green | `Button` `3074:23952` | — | confirmed (owner, 2026-10-29) |
+| COL-2 | Primary button = **button green #38A165** (`interactive/primary`), pressed #2D8151, white label | lime is too light for a white label; owner picked the darker green | `Button` `3074:23952` | — | confirmed (owner, 2026-10-29; contrast in every vertical accepted 2026-11-15 · Q07) |
 | COL-3 | Brand text, links and outline borders use the text-safe step: `text/brand` = `text/link` = `border/brand` (#2D8151 base). On grey or tinted surfaces → `text/brand-on-subtle` (#395626). Success text follows the same pair | readable green on white and on tints | audit 2026-11-01, d2 / d3 | 4 texts use `fill/brand` as text colour (status-bar time, „18 Min.“) | confirmed (owner, 2026-11-01 · d2, d3) |
 | COL-4 | Links take the vertical's brand colour (the separate link green #269C6E is retired for text) | "links use the brand colour, so they differ per category" | same | — | confirmed (owner, 2026-11-01 · d3) |
 | COL-5 | One kit for nine verticals: components bind `semantic` tokens that alias the `category` mode; nothing is recoloured by hand | one change propagates | `category` collection, 9 modes | — | confirmed (owner, 2026-10-07) |
 | COL-6 | Vertical colours stay even where they resemble a status colour (Testosterone red, Weight loss orange); status meaning is carried by icon + text | owner keeps the brand palette | board 2026-10-08 · V1 | — | confirmed (owner) |
-| COL-7 | „Jetzt bezahlen“ is an orange button (`Button` Style `warning`), label SemiBold | payment due must stand out from the brand action | Order 03d `3242:8840` | contrast 2.80:1, see Q7 | confirmed (owner, 2026-10-08 · F1; 2026-11-01 · f02) |
+| COL-7 | „Jetzt bezahlen“ is an orange button (`Button` Style `warning`), label SemiBold | payment due must stand out from the brand action | Order 03d `3242:8840` | contrast 2.80:1, accepted (tolerated exceptions) | confirmed (owner, 2026-10-08 · F1; 2026-11-01 · f02; 2026-11-15 · Q07) |
 | COL-8 | Colours of loose layers are `semantic` variables; legacy collections and raw hex are rebound; page background is `fill/page` on every screen | one palette | applied 2026-11-10 (796 paints) | residue: 91 paints, mostly in Home `4041:12277`; raw #1F2129 footer | confirmed (owner, 2026-11-10 · C2) |
 | COL-9 | `text/tertiary` is dark enough to pass on white and on `fill/page` (#646C78) | hints must stay readable on the grey page | `semantic` | — | confirmed (owner, 2026-10-08 · Q8) |
 | COL-10 | Brand header surface = base colour + large blurred radial glow at 70 %, bound to `category/gradient/*` | owner's reference `3167:47003`; recolours per vertical | `AppHeader` Surface `brand` | — | confirmed (owner, 2026-10-08) |
 | COL-11 | Light theme only | scope | `semantic` has one mode | — | confirmed (owner, 2026-10-07) |
+| COL-12 | Grey text keeps the nearest-colour mapping of 2026-11-10: former "secondary" text → `text/tertiary`, former "tertiary" (meta) → `text/disabled` | the look stays as the owner drew it | Notifications 01 `3168:8264` (meta line) | — | confirmed (owner, 2026-11-15 · round 3 · Q03) |
+| COL-13 | White label on the primary button is accepted in every vertical, below 4.5:1 included: base and Cannabis 3.25, Weight loss 2.80, Contraception 4.15, Asthma 3.53; and on the orange „Jetzt bezahlen“ 2.80 | brand decision | `Button` `3074:23952`; token export 2026-11-03 | — | confirmed (owner, 2026-11-15 · round 3 · Q07) |
 
 ## 2. Typography
 
 | # | Decision | Why | Reference | Violations | Status |
 |---|---|---|---|---|---|
-| TYP-1 | Two families: Poppins (headings, UI) and Roboto (body, captions). Inter is replaced; weights stay within 400 / 500 / 600 (Poppins) and 400 / 500 (Roboto) | one voice | text styles on Foundations | Inter ×19, Roboto Bold / SemiBold ×55 (45 of them the rating widget, Q2), Poppins Light ×2 | confirmed (owner, 2026-11-10 · T5) |
+| TYP-1 | Two families: Poppins (headings, UI) and Roboto (body, captions). Inter is replaced; weights stay within 400 / 500 / 600 (Poppins) and 400 / 500 (Roboto) | one voice | text styles on Foundations | Inter ×19, Roboto Bold / SemiBold ×55 (45 of them the rating widget — tolerated, Q02), Poppins Light ×2 | confirmed (owner, 2026-11-10 · T5) |
 | TYP-2 | Size scale 11 · 12 · 13 · 14 · 16 · 18 · 20 · 22 · 24 · 30 · 36; every other size moves to the nearest step (tie → larger) | scaled blocks left fractional sizes | applied to 41 texts 2026-11-10 | 62 texts still off the scale (display headings, rating widget, V22 pack rows) | confirmed (owner, 2026-11-10 · T6) |
 | TYP-3 | Large marketing headings = **Display**: Poppins Medium, line height 110 %, tracking −0.5 px, sizes **22 / 24 / 30** — strictly on the scale, 26 becomes 24 | "make them all like Home, Category and How it works" | Home `4041:11533`, Category `4075:14790`, `HowItWorks` `4200:4493` | 26 px ×13, fractional 25.86 / 27.42 ×6; styles not created | confirmed (owner, 2026-11-10 · T7; 2026-11-11 · T7) |
 | TYP-4 | Tile and card titles of 22 px (Home tiles, Category cards, Category article) = Display 22 | three fonts for one role | Home tiles, Category `4075:14790` | Inter Bold ×12, Roboto SemiBold ×6, Poppins Light ×2 | confirmed (owner, 2026-11-11 · T5b) |
@@ -114,11 +118,13 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 | CMP-11 | Order timeline becomes a kit component `OrderTimeline` with the Uber-tracking look; Order detail aligns to it | the Uber version is the newest and clearest | Uber R1 `4398:27562` | `TimelineStep` from "In process" ×66; component not built | confirmed (owner, 2026-11-10 · K4) |
 | CMP-12 | Reassuring notes (grey plate in Mix 3, green note in Order 03d / 03e, outlined pill in V22) all become the green `Callout` Tone `brand`. A plain caption under a button stays a caption | "the first three can look like the second" | Order 03d `3242:8840` | Mix 3 grey plate, V22 outlined pill | confirmed (owner, 2026-11-10 · K9) |
 | CMP-13 | Bottom sheets are the kit `BottomSheet` with one padding set (top 8, content 16, bottom 34); every state the screens use must exist in the component before the swap; sheet content is not redrawn | "all states must work" | Mix 1b `4203:14786`, address sheet `4222:17204` | 17 loose sheets with four padding sets; missing kit states: full-height list, filter row, empty result, stacked sheet | confirmed (owner, 2026-11-10 · S6; 2026-11-11 · X3) |
+| CMP-24 | Bottom sheets have **no grabber**: close by the X in a grey circle or by swipe-down, as the kit `BottomSheet` is built | one way to close, as decided on 2026-10-08 | `BottomSheet` `3110:2846` | the hand-built sheets show a grabber (17) | confirmed (owner, 2026-11-15 · round 3 · Q05) |
 | CMP-14 | Exact kit twins replace non-kit pieces without asking: `icon_btn` → `IconButton`, remote buttons → `Button`, legacy status chips → `Badge`, Mix 3 checkbox → `Checkbox` | kit first | — | icon_btn ×31, badges ×4, checkbox ×1 | confirmed (owner, 2026-11-10 · K6; 2026-11-11 · X3) |
 | CMP-15 | „Ähnliche Behandlungen“ on the product page = kit `ProductCard` row: „ab“ stays before the price, no chevron | kit twin exists in Mix 1 | Mix 1 `4120:13980` | legacy `ProductCard` ×8 on V22 | confirmed (owner, 2026-11-11 · K6b) |
 | CMP-16 | Product line of an order: legacy `Image and Info Container` → `OrderLineItem`; `Row` in Order detail and Uber stays | owner keeps his Order detail rows | Plan detail `3168:11875` | legacy ×2 (Category) | confirmed (owner, 2026-11-11 · K6c) |
 | CMP-17 | Header icon buttons are glass components: `IconButton` `glass-light` on a light page, `glass-dark` on brand, gradient or photo; back button is a 52 circle | iOS 26 look; same button on every screen | Mix 1 `4120:13980`, Home `4041:11533` | — | confirmed (owner, 2026-10-08 · Q7; 2026-10-28) |
-| CMP-18 | Notification card: unread = brand outline + dot, icon tile tinted by type, title 16 Medium; action-required → `Button S primary`, other actions → `Button S outline`; cancelled tile neutral | the owner's original looked better; CTAs must be visible | N10 card states `3168:8526` | unread dot colour unanswered (Q12) | confirmed (owner, 2026-10-08) |
+| CMP-18 | Notification card: unread = brand outline + dot, icon tile tinted by type, title 16 Medium; action-required → `Button S primary`, other actions → `Button S outline`; cancelled tile neutral | the owner's original looked better; CTAs must be visible | N10 card states `3168:8526` | — | confirmed (owner, 2026-10-08) |
+| CMP-25 | The unread dot on `NotificationCard` takes the colour of the notification type (green for a shipped order, orange for a failed payment…), as drawn now | owner keeps the current look | Notifications 01 `3168:8264` | — | confirmed (owner, 2026-11-15 · round 3 · Q12) |
 | CMP-19 | Active order card puts the **status** first: small product row, 6-segment progress (done = dark brand, current = bright brand), caption „Jetzt“ + large status, timestamp and next step | the user comes for the status | `ActiveOrderCard` `3241:3879`; owner reference `3167:48304` | — | confirmed (owner, 2026-10-08) |
 | CMP-20 | Snackbar is dark | contrast with the light page | `Snackbar` `3105:2326` | — | confirmed (owner, 2026-10-08 · E6) |
 | CMP-21 | Search: round filter icon button + a second row of sort dropdowns; search field has a brand submit button; one card per result | owner's search redesign `3167:46813` | `SearchFilterBar` `3116:3349`; `3334:29379` | — | confirmed (owner, 2026-10-08 · F3; 2026-11-01 · d6) |
@@ -145,7 +151,7 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 | SHP-2 | Only two card radii: 24 and 16 | fewer shapes | — | — | confirmed (owner, 2026-10-28) |
 | SHP-3 | Raw and scaled radii go to tokens: pills → `radius/full`, 28 / 20 → 24, 8.1 → 8, 5.7 → 6, 14 → 16; hero bottom corners 28 → 40 | one scale | applied 2026-11-10 (326 nodes) | 37 unbound (mixed corners, Home `4041:12277`) | confirmed (owner, 2026-11-10 · R3) |
 | SHP-4 | **Every card has a hairline outline and the card shadow** (0 / 2 / 12, black 5 %) | owner chose both, on all cards | Order 03 `3309:11534` (shadow), `HowItWorksStep` (outline) | ≈ 200 flat cards; ≈ 40 with a 1 px outline; the 33 shadowed cards (Order, Uber) have a 1 px outline instead of the hairline | confirmed (owner, 2026-11-10 · C1; 2026-11-11 · X1) |
-| SHP-5 | Three shadow levels as effect styles: card · bottom bar · floating | ≈ 30 raw shadow signatures were in use | — | styles not created; bottom bar and floating use the kit's current values, unconfirmed (Q9) | confirmed (owner, 2026-11-10 · C3) |
+| SHP-5 | Three shadow levels as effect styles: card · bottom bar · floating | ≈ 30 raw shadow signatures were in use | — | styles not created | confirmed (owner, 2026-11-10 · C3); values 2026-11-15 · Q09: card 0 / 2 / 12 5 % · bottom bar 0 / −4 / 16 8 % (`StickyBottomBar`) · floating 0 / 4 / 24 25 % (`NavMenu`); card outline `border/default` |
 | SHP-6 | Hairline = 1 physical pixel (`border-width/hairline`) for dividers, card, input, chip and glass outlines | iOS-native thin lines | hairline review 2026-10-29 | — | confirmed (owner, 2026-10-29) |
 | SHP-7 | Every fill, stroke, padding, gap and radius in a kit component is bound to a variable | one change propagates | kit audit 2026-10-08 | — | confirmed (owner, 2026-10-07) |
 
@@ -155,10 +161,10 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 |---|---|---|---|---|---|
 | HDR-1 | The reference header is the kit `NavBar`: a button on each side, title in the middle, progress steps under it; title or steps may be absent | "this is the reference: two buttons at the sides, title in the middle, and the progress bar" | Mix 1 `4120:13980` | Mix top bar is a wrapper around `NavBar` (fine) | confirmed (owner, 2026-11-10 · K1) |
 | HDR-2 | It is used on **every screen with "back"**, account screens included; special headers only on Home, Search and Order detail | one header | questionnaire, Category, V22, V23 already use it (54 screens) | Plans and Notifications: large left title via `AppHeader` (34 screens) | confirmed (owner, 2026-11-11 · K1) |
-| HDR-3 | Title size depends on the progress bar: smaller when steps are shown | owner comment | Mix 2 (16 SemiBold), Cannabis V23c (22 Medium) | exact sizes not confirmed — Q1 | decision-needed |
+| HDR-3 | `NavBar` title: with steps `Heading/H5` 16 SemiBold, without steps `Title 20 · Medium` | smaller when a progress bar is shown; 20 lets long titles („Benachrichtigungen“) fit the 215 px slot | Mix 2 `4120:14150` (16), Cannabis V23c `3735:14291` (22 → 20) | `NavBar` master title has no style; Cannabis V23 and Category titles differ | confirmed (owner, 2026-11-15 · round 3 · Q01) |
 | HDR-4 | Order detail and Uber use `AppHeader · order-detail` (number bold, date, copy-ID button, progress) | kit twin exists | `AppHeader` `3108:2579` | 11 hand-built headers | confirmed (owner, 2026-10-08; 2026-11-11 · K1) |
 | HDR-5 | Funnel step progress: segment 17, current 53, height 2, gap 8, centred — only in the funnel header | "I meant the progress bar in the header when you start the funnel" | `Progress/Steps` `3081:2236` | — | confirmed (owner, 2026-10-08 · d4) |
-| HDR-6 | Order-status progress = equal segments following the app's six timeline steps | real backend statuses | `OrderProgress` `3105:2366` | 6-step ×16 and 4-step ×9 coexist — owner skipped the question (Q6) | confirmed (owner, 2026-10-08 · d3, d4) |
+| HDR-6 | Order-status progress = equal segments following the app's six timeline steps | real backend statuses | `OrderProgress` `3105:2366` | 4-step bars on Order 03d `3242:8840` and the copied-number toast `4216:16412` | confirmed (owner, 2026-10-08 · d3, d4; **6 steps everywhere** 2026-11-15 · Q06) |
 | HDR-7 | **No tab bar.** Navigation = burger in the header → `NavMenu` popover over a blurred screen; Home has a floating „Neue Bestellung“ pill | owner's reference section `3158:20812` | Home menu `4221:18735` | — | confirmed (owner, 2026-10-08 · E1) |
 | HDR-9 | Leaving the questionnaire mid-flow: „…“ overflow in the `NavBar` trailing slot → small menu in the `NavMenu` style → leave-confirmation `Dialog` („Fragebogen verlassen?“). No tab bar and no bottom exit button in funnels | the sticky CTA owns the bottom; exit lives in the header | menu `5019:37187`, dialog `5023:37549` (board `5018:37061`) | not rolled out to the steps; the menu is a mock, not a kit component | confirmed (owner, 2026-11-11 · variant C) |
 | HDR-8 | `AppHeader · flow-center` duplicates `NavBar` and is removed once no screen uses it | one component per job | — | still in the kit | confirmed (owner, 2026-11-11 · X3) |
@@ -213,40 +219,35 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 | FIG-4 | Reuse kit components first; a new component needs the owner's yes | — | — | — | confirmed (owner) |
 | FIG-5 | Each divergence is decided by the owner on a decision board (options with real crops, a recommendation, a comment field); nothing is normalised by guesswork | "show me cases" | boards of 2026-10-08, 11-01, 11-10, 11-11 | — | confirmed (owner) |
 | FIG-6 | One agent writes to the Figma file at a time | parallel writes corrupt each other | — | — | confirmed (owner) |
+| FIG-8 | Home: the working frame `4041:12277` is right; the duplicate „10 € sichern“ block in its Jira copy `4292:29906` goes at the next sync | the copy repeats the header promo | `4041:12277` | Jira copy `4292:29906` | confirmed (owner, 2026-11-15 · round 3 · Q04) |
 | FIG-7 | All layout bugs found are fixed (overlaps, clipped headings, untranslated strings) | — | Home `4041:11533` (fixed 2026-11-10) | Plan „Change“, Category FAQ overlap (German render) | confirmed (owner, 2026-11-10 · H3) |
 
 ---
 
 ## Open questions for the project owner
 
-1. **Header title sizes (HDR-3).** Owner: "depends — smaller when there is a progress bar".
-   Hypothesis: with steps `H5` 16 SemiBold, without steps `Title 22 · Medium`; then Category goes
-   16 → 22 and account screens get a centred 22. The `NavBar` title slot is 215 px wide (343 − two 52 px
-   buttons): „Benachrichtigungen“ at 22 Medium does not fit on one line — needs the owner's eye.
-2. **Rating widget and copyright** („4,81 · Sehr gut“, „© 2026 DoktorABC.com“; Roboto Bold /
-   SemiBold, sizes 10–14, some fractional). A: keep bold as an external trust mark and only round
-   the sizes · B: move to `Caption M`. Not answered.
-3. **Grey text ladder.** The colour pass of 2026-11-10 mapped by nearest colour: former legacy
-   "secondary" → `text/tertiary`, former "tertiary" → `text/disabled` (look unchanged). Mapping by
-   name would darken both. Not answered.
-4. **Home frame `4041:12277`** differs from its Jira twin `4292:29906` (2 texts and 2 frames more
-   there). Which side is right?
-5. **Bottom sheet handle.** 2026-10-08: no handle, X in a grey circle + swipe-down — the kit
-   `BottomSheet` is built that way (top 8, sides 16, bottom 24). Loose sheets on the screens show
-   a grabber and bottom 34; the 2026-11-10 answer fixed the paddings (8 / 16 / 34) but not the handle.
-6. **Order progress: 6 or 4 steps.** Both exist; the owner skipped the question — no rule.
-7. **Primary-button contrast** in Weight loss (2.80:1), Contraception (4.15), Asthma (3.53) and the
-   orange warning button (2.80) is not formally accepted.
-8. **Motion register and tokens.** Nothing decided; no duration or easing tokens.
-9. **Shadow values** for "bottom bar" (kit `StickyBottomBar`: 0 / −4 / 16, 8 %) and "floating" (kit
-   `NavMenu`: 0 / 4 / 24, 25 %), and the **colour of the card outline** (`border/default`, as on
-   `HowItWorksStep` and one Order card) — taken from the kit, not yet confirmed as the rule.
+Numbers are never reused. Answered questions stay listed with their answer.
+
+1. ~~Header title sizes~~ — answered 2026-11-15: with steps 16 SemiBold, without steps
+   `Title 20 · Medium` (HDR-3).
+2. ~~Rating widget and copyright~~ — answered 2026-11-15: stays bold as an external trust mark, sizes
+   rounded to the scale; tolerated exception.
+3. ~~Grey text ladder~~ — answered 2026-11-15: keep the nearest-colour mapping (COL-12).
+4. ~~Home frame `4041:12277` vs its Jira twin~~ — answered 2026-11-15: the working frame is right
+   (FIG-8).
+5. ~~Bottom sheet handle~~ — answered 2026-11-15: no grabber (CMP-24).
+6. ~~Order progress, 6 or 4 steps~~ — answered 2026-11-15: 6 everywhere (HDR-6).
+7. ~~Primary-button contrast~~ — answered 2026-11-15: accepted as a brand decision (COL-13).
+8. **Motion register and tokens.** Nothing decided; no duration or easing tokens. The owner keeps
+   it open and will come back to it (2026-11-15).
+9. ~~Shadow values and card outline colour~~ — answered 2026-11-15: the kit values are the rule
+   (SHP-5).
 10. **Home** is being redesigned: ten above-the-fold variants (section `4973:30698`), the owner's
     draft with a dynamic green zone (`4995:72760`), notice options B / C / E (section `5030:37524`)
     and the category-deck prototype — none chosen. The new drafts are 402 wide; every READY TO DEV
-    screen is 375.
+    screen is 375. Decided in its own thread.
 11. **Copywriter:** final German for the `t+` keys.
-12. **Unread dot colour** on `NotificationCard` (finding f51) — no answer.
+12. ~~Unread dot colour~~ — answered 2026-11-15: colour by notification type (CMP-25).
 
 ## Tolerated exceptions
 
@@ -257,7 +258,9 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 | Footer „Footer v2 — Navy“: remote components, unstyled texts, side padding 30, raw navy | hard rules 1–4 | owner keeps the website footer as is | 2026-11-10 |
 | Remote `usp-item` on Category, clipped title included | hard rule 1 | owner: keep as is | 2026-11-11 |
 | `Row` (product line) in Order detail and Uber | hard rule 1 | owner keeps his rows | 2026-11-11 |
-| Rating widget and copyright (bold, off-scale sizes) | hard rule 4 | open (Q2); untouched until answered | 2026-11-10 |
+| Rating widget and copyright (Roboto Bold / SemiBold; sizes rounded to the scale) | hard rule 4 | external trust mark (owner, Q02) | 2026-11-15 |
+| White label on the primary button in Weight loss 2.80, Contraception 4.15, Asthma 3.53 and on the orange „Jetzt bezahlen“ 2.80 | lens 03 · Contrast floors | owner's brand decision (COL-13) | 2026-11-15 |
+| Meta text at `text/disabled` (2.19:1 on white) from the nearest-colour mapping | lens 03 · Contrast floors | owner keeps the look (COL-12) | 2026-11-15 |
 | System-UI reference screens (SF Pro, OS layouts) | all product rules | they document the OS | 2026-11-10 |
 | Questionnaire content, incl. the QS01 dead end | copy rules | content comes from the database | 2026-10-08 |
 | Thank-you: white on lime; „start“ screen not rebuilt; motivation line at 40 % white | lens 03 | owner: keep as is | 2026-10-08 |
@@ -267,8 +270,9 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 
 Reviewers treat these as blocking severity: always debt, no context exception (except the
 tolerated exceptions above). Full wording: `product.md` §6 — the critic enforces that list; keep
-both in step. Compiled on 2026-11-11 from the owner's "everywhere / always" answers; **the owner
-has not reviewed the list yet.**
+both in step. Compiled on 2026-11-11 from the owner's "everywhere / always" answers; reviewed by
+the owner rule by rule on 2026-11-15: 14 kept, 2 moved to product warnings (listed below the
+rules in `product.md` §6).
 
 1. Only kit components; nothing new without the owner (FIG-4, CMP-14).
 2. No bare hex — only `semantic` variables (COL-5, COL-8).
@@ -281,11 +285,12 @@ has not reviewed the list yet.**
 9. Every link is underlined (TYP-7).
 10. Margin 16, content top 24, section gap 32, card padding 16 (SPC-3, SPC-4, SPC-5, SPC-6).
 11. `NavBar` on every screen with "back"; `AppHeader` only on Home, Search, Order detail; no tab bar (HDR-1, HDR-2, HDR-4, HDR-7).
-12. Brand lime is never a text colour (COL-1, COL-3).
-13. Vertical colour only through the `category` mode (COL-5).
-14. UI copy German (Sie), bound to `copy` variables; layer names English (CPY-1, CPY-4, CPY-7).
-15. Frames of the Jira-linked section `4292:24466` are never deleted or recreated (FIG-1).
-16. A restyle keeps the owner's composition and copies his exact values (PAT-11).
+12. Vertical colour only through the `category` mode (COL-5).
+13. UI copy German (Sie), bound to `copy` variables; layer names English (CPY-1, CPY-4, CPY-7).
+14. A restyle keeps the owner's composition and copies his exact values (PAT-11).
+
+Moved to warnings on 2026-11-15 (the critic reports them, a human decides): brand lime used as a
+text colour (COL-1, COL-3); a frame of the Jira-linked section deleted or recreated (FIG-1).
 
 ---
 

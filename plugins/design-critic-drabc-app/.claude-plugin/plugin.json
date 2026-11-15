@@ -1,6 +1,6 @@
 {
   "name": "design-critic-drabc-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dr.ABC Application (mobile app) product layer for design-critic: design system sources, patterns, voice, hard rules and the decisions log.",
   "author": {
     "name": "gorelikroman"
