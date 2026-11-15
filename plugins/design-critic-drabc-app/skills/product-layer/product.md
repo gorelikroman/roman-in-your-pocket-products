@@ -91,7 +91,7 @@ Hex = base vertical.
 
 | Role | Token | Value / note |
 |---|---|---|
-| Primary button | `interactive/primary`, `-pressed`; label `text/on-brand` | #38A165 / #2D8151 (button green, not the logo lime); white label accepted at 3.25:1 |
+| Primary button | `interactive/primary`, `-pressed`; label `text/on-brand` | #38A165 / #2D8151 (button green, not the logo lime); white label accepted (owner) although below 4.5:1 in several verticals — base 3.25, Weight loss and the warning button 2.80 (§8) |
 | Brand surface, progress, brand icon | `fill/brand`, `icon/brand` | #7ABA47 lime — fills and icons only, **never text** |
 | Brand tint | `fill/brand-subtle`, `interactive/selected` | #F2F8ED |
 | Brand text, links, outline borders | `text/brand`, `text/link`, `border/brand` | #2D8151 on white. On grey or tinted surfaces use `text/brand-on-subtle` #395626 |
@@ -115,8 +115,8 @@ size exists. Line height and letter spacing are set in % inside the styles.
 
 | Style | Font | Size / line | Use for |
 |---|---|---|---|
-| `Heading/Display` · `H1` · `H2` · `H3` · `H4` · `H5` | Poppins SemiBold | 36 / 30 / 24 / 20 / 18 / 16 | content headings; `H5` = title in the header when steps are shown |
-| `Heading/Title 22 · Medium`, `Title 20 · Medium` | Poppins Medium | 22, 20 / 130 % | screen title in the header; order-detail header |
+| `Heading/Display` · `H1` · `H2` · `H3` · `H4` · `H5` | Poppins SemiBold | 36 / 30 / 24 / 20 / 18 / 16 | content headings; `H5` = `NavBar` title when steps are shown |
+| `Heading/Title 22 · Medium`, `Title 20 · Medium` | Poppins Medium | 22, 20 / 130 % | `Title 20` = `NavBar` title without steps; `Title 22` = order-detail header |
 | Display 22 / 24 / 30 *(decided, not yet created — §10)* | Poppins Medium, 110 %, −0.5 px | 22 / 24 / 30 | large marketing headings (Home, Category, How it works), tile and card titles |
 | `Subtitle/Subtitle XL·Medium`, `L·Medium`, `L·SemiBold`, `M·Medium`, `M·SemiBold` | Poppins | 18 / 16 / 14, 120–130 % | row and card titles, labels such as „Lieferadresse“, „Gesamt:“ |
 | `Body/Body L`, `Body M`, `Body M · Medium`, `Body S`, `Body S · Medium` | Roboto | 18 / 16 / 14, 145–150 % | prose; `Body S` is also the section heading above a card |
@@ -168,7 +168,7 @@ Do not use `radius/component/*` (deprecated), `radius/surface/nested-16` (its va
 | Outline / secondary button | 1 | `border-width/default` |
 | Selected option, selected card | 1.5 | `border-width/selected` |
 | Focus, error | 2 | `border-width/strong` |
-| Shadow levels | three: **card** 0 / 2 / 12, black 5 % · **bottom bar** 0 / −4 / 16, black 8 % (as on `StickyBottomBar`) · **floating** 0 / 4 / 24, black 25 % (as on `NavMenu`; menus, floating button) | effect styles — not created yet; the last two values are the kit's current ones, not yet confirmed (§10) |
+| Shadow levels | three: **card** 0 / 2 / 12, black 5 % · **bottom bar** 0 / −4 / 16, black 8 % (as on `StickyBottomBar`) · **floating** 0 / 4 / 24, black 25 % (as on `NavMenu`; menus, floating button) | effect styles (values confirmed by the owner 2026-11-15) — not created yet (§10) |
 
 ## 3. Voice and terms
 
@@ -221,18 +221,18 @@ working section `3168:4410`.
 | Small note under a button | plain `Caption` text | a Callout | text style `Caption/Caption` |
 | Status of an item | `Badge` (neutral · brand · success · warning · error · info) | colour alone; a chip | `3080:2241` |
 | Order timeline | `OrderTimeline` (decided, Uber-tracking look; not built yet — until then copy the timeline from Uber R1) | `TimelineStep` from "In process" | Uber R1 `4398:27562` |
-| Bottom sheet | `BottomSheet` (Header title+close / title+reset; Footer button / button+link / none) | a loose frame with its own paddings | `3110:2846`; Mix 1b `4203:14786` |
+| Bottom sheet | `BottomSheet` (Header title+close / title+reset; Footer button / button+link / none); **no grabber** — close by X or swipe-down | a loose frame with its own paddings | `3110:2846`; Mix 1b `4203:14786` |
 | Confirmation of a destructive action | sheet pattern „Plan beenden“ (consequences → alternatives → safe primary → destructive as red text); a short confirmation = `Dialog` (one · two · destructive) | a red primary button for a reversible action | „Plan beenden“ `3340:10464`; `Dialog` `3110:2930` |
 | Transient feedback | `Snackbar` (dark; neutral · success · error · warning), above the sticky-bar zone | a toast for a blocking error | `3105:2326` |
 | Empty state, error, offline, loading, success | `EmptyState` (Tone empty · error · offline · success · loading); `Skeleton` while loading | "No data" text | `3111:2773`, `3210:2490`; Plan error `3222:8811` |
 | Navigation | burger in the header → `NavMenu` popover over a blurred screen | `TabBar` (deprecated, not used) | `3164:26652`; Home menu `4221:18735` |
-| Notification | `NotificationCard` (unread · read · action · resolved · …) | grouping by topic, section headers | `3111:2851`; card states `3168:8526` |
+| Notification | `NotificationCard` (unread · read · action · resolved · …); the unread dot takes the colour of the notification type | grouping by topic, section headers | `3111:2851`; card states `3168:8526` |
 | List row, settings | `ListItem`, `ListGroup` | hand-built rows | `3090:2772`, `3109:2576` |
 | Cannabis effects | `EffectIcon` (11 effects), `EffectTile` | redrawn bubbles | `3257:10085`, `3257:10086` |
 
 Tolerated non-kit pieces (do not replace, do not copy into new screens): the footer „Footer v2 —
 Navy“ with its remote `accordions` and `Legal / PCi`; remote `usp-item` on Category; `Row` (product
-line) in Order detail and Uber; the rating widget „4,81 · Sehr gut“.
+line) in Order detail and Uber; the rating widget „4,81 · Sehr gut“ (stays bold as an external trust mark; sizes on the scale).
 
 ## 5. Patterns
 
@@ -251,7 +251,7 @@ working section `3168:4410`.
 
 | Screen type | Header | Title |
 |---|---|---|
-| Any screen with "back" — funnel, questionnaire, product, category, plans, notifications, sheets as screens | `NavBar`: back left, optional button right, centred title, optional steps | with steps → `Heading/H5` 16 SemiBold; without steps → `Title 22 · Medium` *(owner comment: "smaller when there is a progress bar"; exact sizes to be confirmed, §10)*; title may be absent (questionnaire, product) |
+| Any screen with "back" — funnel, questionnaire, product, category, plans, notifications, sheets as screens | `NavBar`: back left, optional button right, centred title, optional steps | with steps → `Heading/H5` 16 SemiBold; without steps → `Title 20 · Medium` (long titles such as „Benachrichtigungen“ fit the 215 px slot); title may be absent (questionnaire, product) |
 | Home | `AppHeader · home` on the brand surface with glow: logo, glass burger | — |
 | Search | `AppHeader · search` on brand: glass back, search field | — |
 | Order detail, Uber tracking | `AppHeader · order-detail`: back, order number **bold**, date, copy-ID button, progress | `Title 22 · Medium` around the bold number |
@@ -309,7 +309,7 @@ working section `3168:4410`.
 
 ### Order detail
 - **Use when:** one order's status, delivery and payment
-- **Structure:** order header → status card with the timeline → delivery → payment (`KeyValueRow`, totals) → further information (`AccordionItem`) → support
+- **Structure:** order header with the 6-step order progress (one segment per backend status, every order state) → status card with the timeline → delivery → payment (`KeyValueRow`, totals) → further information (`AccordionItem`) → support
 - **Reference:** CALENDAR 03 `3309:11534`, 03d payment due `3242:8840`, 03e cancelled `3242:9115`
 - **Decisions log rows:** PAT-3 · PAT-4 · HDR-4 · HDR-6 · TYP-6 · CMP-10 · CMP-11 · COL-7 · STA-6
 
@@ -327,7 +327,7 @@ working section `3168:4410`.
 
 ### Bottom sheet
 - **Use when:** a short task or a choice on top of the current screen
-- **Structure:** `BottomSheet`: title + close (X in a grey circle), content padding 16, bottom 34; full-height lists scroll inside; a second sheet may stack on top (Sort & filter)
+- **Structure:** `BottomSheet`: title + close (X in a grey circle), content padding 16, bottom 34, no grabber; full-height lists scroll inside; a second sheet may stack on top (Sort & filter)
 - **Reference:** Mix 1b `4203:14786`, address sheet `4222:17204`, About plans `4214:16237`
 - **Decisions log rows:** CMP-13 · open question 5
 
@@ -351,7 +351,7 @@ working section `3168:4410`.
 
 ## 6. Hard rules
 
-The product's non-negotiables, compiled from the owner's board answers (sources in
+The product's non-negotiables, confirmed rule by rule by the owner on 2026-11-15 (sources in
 `design-decisions.md` · Hard rules). A violation is `debt` with no `context` exception (review
 method §4.5), except the tolerated pieces listed in `design-decisions.md`.
 
@@ -371,21 +371,21 @@ method §4.5), except the tolerated pieces listed in `design-decisions.md`.
 10. Screen margin 16, content top 24, section gap 32, card padding 16 (compact row 12 × 16).
 11. Every screen with "back" uses `NavBar`; Home, Search and Order detail use their `AppHeader`
     layout. No tab bar.
-12. Brand lime (`fill/brand`, `icon/brand`) is never a text colour; brand text on a tint uses
-    `text/brand-on-subtle`.
-13. Vertical colour only through the `category` mode, never by recolouring layers.
-14. UI copy is German (Sie), bound to `copy` variables; layer and frame names are English.
-15. Frames of the Jira-linked section `4292:24466` are never deleted or recreated.
-16. Restyling an owner screen changes components, tokens, text styles and spacing only — never the
+12. Vertical colour only through the `category` mode, never by recolouring layers.
+13. UI copy is German (Sie), bound to `copy` variables; layer and frame names are English.
+14. Restyling an owner screen changes components, tokens, text styles and spacing only — never the
     composition or the content. Matching an owner frame means copying his exact values.
 
 Product warnings (listed; a human accepts or rejects): German text that wraps or clips; a flow
 without loading / error / empty states; a toast used for a blocking error; more than one filled
-button on a screen; a hand-built block that has a kit twin; an English string in `de` mode.
+button on a screen; a hand-built block that has a kit twin; an English string in `de` mode;
+brand lime (`fill/brand`, `icon/brand`) used as a text colour — brand text uses `text/brand`, on a
+tint `text/brand-on-subtle`; a frame of the Jira-linked section `4292:24466` deleted or recreated
+(Jira tickets link to its frame ids — replace contents instead, §9).
 
 ## 7. Motion register
 
-- **Register:** **not decided.** Proposed until the owner says otherwise: restrained — a transition
+- **Register:** **not decided** — the owner keeps it open and will come back to it (2026-11-15). Until then: restrained — a transition
   explains the interaction, no decorative motion (medical product, anxious users).
 - **Durations and easing:** none — no duration or easing tokens exist in Figma or in `dr-abc-ui`.
 - **Decided so far:** bottom sheets close by swipe-down as well as by the X; `NavBar` has a
@@ -395,8 +395,8 @@ button on a screen; a hand-built block that has a kit twin; an English string in
 ## 8. Tolerated exceptions (summary)
 
 Full table with reasons: `design-decisions.md`. In short: white label on the primary button and on
-lime (below 4.5:1, owner's brand decision) · the navy footer with its remote parts · remote
-`usp-item` · `Row` in Order detail · the rating widget · questionnaire texts from the backend ·
+lime and the primary buttons of every vertical incl. the orange „Jetzt bezahlen“ (below 4.5:1, owner's brand decision) · the navy footer with its remote parts · remote
+`usp-item` · `Row` in Order detail · the rating widget (bold, sizes on the scale) · grey text kept on the nearest-colour mapping (meta text at `text/disabled`) · questionnaire texts from the backend ·
 system-UI reference screens (lock screen, Dynamic Island, push, share sheet, system calendar —
 frames prefixed `System reference · `; they follow the OS, not this system) · hidden „· OLD“ frames
 (kept, never copied).
@@ -423,7 +423,7 @@ frames prefixed `System reference · `; they follow the OS, not this system) · 
 
 The critic reports these as known debt or `decision-needed`, not as new findings on every screen.
 
-**Decided, not yet in Figma** (state on 2026-11-11; the mechanical pass of 2026-11-10 bound tokens,
+**Decided, not yet in Figma** (state on 2026-11-15; the mechanical pass of 2026-11-10 bound tokens,
 colours, radii and names on loose layers of the working section only):
 
 - Kit: Display 22 / 24 / 30 text styles and the three effect styles do not exist; the `SectionHeader`
@@ -433,7 +433,9 @@ colours, radii and names on loose layers of the working section only):
   `CardAction` exists; `SelectionRow` has no compact r16 variant and its selected outline is 2;
   `BottomSheet` lacks full-height list, filter row, empty result and stacked-sheet states;
   `OrderTimeline` is not built; `AppHeader · flow-center` still exists; `NavBar` title and texts in
-  `NavMenu`, `HowItWorks`, `ActivePlanCard` have no style; `ProductCard` link lost its underline.
+  `NavMenu`, `HowItWorks`, `ActivePlanCard` have no style (decided: `H5` with steps, `Title 20 · Medium`
+  without); `ProductCard` link lost its underline; the effect styles card / bottom bar / floating are
+  not created.
 - Screens: about 200 cards are flat (no outline, no shadow); Order detail 03d / 03e keep section
   headings inside cards; Plans and Notifications still use the large left title (`AppHeader`);
   Order detail 03 / 04 / 05 and Uber build their header by hand; 17 bottom sheets are loose frames;
@@ -441,17 +443,19 @@ colours, radii and names on loose layers of the working section only):
   remote `input`; Mix 1 dosage is a segmented switch; FAQs on Home / V22 / Mix 3 / Category are not
   `AccordionItem`; section gaps of 20 / 24 / 48 remain; headings of 26 px remain; ≈ 455 loose
   texts have no style; ≈ 60 links inside instances are not underlined; 18 in-card buttons have
-  radius 12.
+  radius 12; the hand-built bottom sheets show a grabber (decided: none); Order 03d and the
+  copied-number toast screen show a 4-step order progress (decided: 6); the rating widget has
+  fractional sizes 10–14 (decided: round to the scale, keep bold).
 - The questionnaire exit („…“ menu + leave dialog, decided 2026-11-11) is drawn on one board only;
   the menu is a mock, not a kit component, and the steps do not have it yet.
-- The Jira-linked section `4292:24466` has none of the 2026-11-10 changes yet.
+- The Jira-linked section `4292:24466` has none of the 2026-11-10 changes yet. Its Home copy
+  `4292:29906` has a duplicate „10 € sichern“ block under the rating; the working frame `4041:12277`
+  is right, the block goes at the next sync.
 - Layout bugs visible only in German: Plan row link shows „Change“ instead of „Ändern“ (static
   instance property), Category FAQ question overlaps the answer.
 - Code (`dr-abc-ui`) is not synced with any decision after 2026-11-03.
 
-**Open questions for the owner** (numbered in `design-decisions.md`): exact header title sizes
-(Q1) · rating widget (Q2) · grey text ladder after the colour pass (Q3) · Home frame `4041:12277`
-(Q4) · bottom sheet handle (Q5) · order progress, 6 vs 4 steps (Q6) · primary-button contrast in
-Weight loss, Contraception, Asthma (Q7) · motion register and tokens (Q8) · values of the "bottom
-bar" and "floating" shadows and the colour of the card outline (Q9) · Home layout and category deck
-(Q10) · German copy for `t+` keys (Q11) · unread dot colour (Q12).
+**Open questions for the owner** (numbered in `design-decisions.md`; Q1–Q7, Q9 and Q12 were
+answered on 2026-11-15): motion register and tokens (Q8, the owner will come back to it) · Home
+layout and category deck (Q10, decided in its own thread) · German copy for `t+` keys (Q11,
+copywriter).
