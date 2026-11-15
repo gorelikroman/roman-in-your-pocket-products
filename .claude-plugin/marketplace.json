@@ -9,6 +9,11 @@
       "name": "design-critic-reboost",
       "source": "./plugins/design-critic-reboost",
       "description": "Reboost product layer for design-critic"
+    },
+    {
+      "name": "design-critic-drabc-app",
+      "source": "./plugins/design-critic-drabc-app",
+      "description": "Dr.ABC Application (mobile app) product layer for design-critic"
     }
   ]
 }

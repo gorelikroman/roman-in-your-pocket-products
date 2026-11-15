@@ -6,6 +6,7 @@ everything that belongs to our own products and must not travel with the shareab
 | Path | What |
 |---|---|
 | `plugins/design-critic-reboost/` | **Reboost product pack**: the Reboost layer for design-critic (`product.md`, `design-decisions.md`) as a plugin |
+| `plugins/design-critic-drabc-app/` | **Dr.ABC Application pack**: the layer of the DoktorABC mobile app (Figma file `3GnJD8QN587Y912O3F15Cx`) — handbook, hard rules and the owner's decisions log |
 | `visual-testing/` | Testplane pilot on the Reboost Storybook: screenshot regression and live layout checks, first results |
 | `presentation/` | Team decks, the “Critic in Action” demo page and the short scroll, with standalone HTML |
 | `HANDOFF.md` | Where the work stands, for the next agent |
@@ -24,9 +25,10 @@ A product pack, only for those who work on that product (needs read access to th
 ```bash
 claude plugin marketplace add gorelikroman/design-critic-products
 claude plugin install design-critic-reboost@design-critic-products
+claude plugin install design-critic-drabc-app@design-critic-products
 ```
 
-Then name the product in a request: “review the payment form in Reboost”. Without the pack the
+Then name the product in a request: “review the payment form in Reboost”, “design the pause-plan screen for the Dr.ABC app”. Without the pack the
 critic answers with universal rules only and says so in its first line.
 
 For a whole repository's team, put both marketplaces and plugins in that repository's
@@ -40,7 +42,8 @@ For a whole repository's team, put both marketplaces and plugins in that reposit
   },
   "enabledPlugins": {
     "design-critic@design-critic-core": true,
-    "design-critic-reboost@design-critic-products": true
+    "design-critic-reboost@design-critic-products": true,
+    "design-critic-drabc-app@design-critic-products": true
   }
 }
 ```
@@ -54,7 +57,7 @@ For a whole repository's team, put both marketplaces and plugins in that reposit
 3. Update the names in `skills/product-layer/SKILL.md` and the plugin's `plugin.json`.
 4. Add the plugin to `.claude-plugin/marketplace.json`.
 
-Next in line: DoktorABC and the mobile app.
+Next in line: the DoktorABC website.
 
 ## Updating a pack
 
