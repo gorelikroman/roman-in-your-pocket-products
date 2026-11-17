@@ -48,6 +48,7 @@ Status is editorial (is this row a rule of the project). It is not an audit resu
 - 2026-11-10 — consistency board, round 1 (36 items): typography, spacing, radius, colour, components, hygiene.
 - 2026-11-11 — consistency board, round 2 (13 of 14 items): headers, section gap, display sizes, card outline + shadow, kit changes.
 - 2026-11-15 — rules board, round 3 (26 items): hard-rule list reviewed rule by rule (14 kept, 2 moved to warnings); open questions Q1–Q7, Q9, Q12 answered; Q8 kept open.
+- 2026-11-17 — chat: motion register (between restrained and playful, micro-animations with character), `Switch`, `SegmentedControl`, `Tabs` motion, press feedback, popover enter / exit (MOT-1 … MOT-7).
 
 ---
 
@@ -224,6 +225,19 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 
 ---
 
+## 11. Motion
+
+| # | Decision | Why | Reference | Violations | Status |
+|---|---|---|---|---|---|
+| MOT-1 | Register between restrained and playful: calm, short moves plus micro-animations with a light overshoot (about 5 %) on small things the finger has just touched; never on sheets, dialogs, menus, errors or destructive actions | "something between restrained animation and bounce; micro-animations that show character, that this is not slop" | `drabc-app-ds` `src/utils/motion.ts` | — | confirmed (owner, 2026-11-17 · chat) |
+| MOT-2 | One motion set: curves `ease.out` / `ease.inOut` / `ease.accelerate` / `ease.drawer`, durations 120 / 180 / 240 / 300 ms, springs `lively` (≈ 5 % overshoot) and `settle` (none), press scale 0.97 / 0.92 | 4 curve pairs and 9 durations were in use | `src/utils/motion.ts` | — | candidate (values proposed 2026-11-17; not judged on a device) |
+| MOT-3 | `Switch` moves with a soft start, a sharp acceleration and a soft landing | owner request | `Switch` `3077:2251` | — | confirmed (owner, 2026-11-17 · chat) |
+| MOT-4 | `SegmentedControl`: the selected thumb slides between segments and can be dragged | owner request | `SegmentedControl` `3089:2612` | — | confirmed (owner, 2026-11-17 · chat) |
+| MOT-5 | `Tabs` (and the deprecated `TabBar`) animate the change of the selected tab | owner request | `Tabs` `3100:2784` | — | confirmed (owner, 2026-11-17 · chat) |
+| MOT-6 | Every pressable gives feedback while the finger is down: colour plus a small scale that springs back; checkbox, radio and switch included | nothing changed under the finger on three controls | — | — | confirmed (owner, 2026-11-17 · chat: "do what you propose") |
+| MOT-7 | Dropdown lists and the calendar fade in and drop into place, leave faster; no bounce | they appeared and vanished in one frame | `Dropdown` `3084:2367`, `DatePicker` `3085:2699` | — | confirmed (owner, 2026-11-17 · chat: "do what you propose") |
+| MOT-8 | A change from the keyboard is a cut; nothing animates on first paint; reduced motion = instant change with the state still visible | design-critic lens 09 | — | — | candidate |
+
 ## Open questions for the project owner
 
 Numbers are never reused. Answered questions stay listed with their answer.
@@ -238,8 +252,8 @@ Numbers are never reused. Answered questions stay listed with their answer.
 5. ~~Bottom sheet handle~~ — answered 2026-11-15: no grabber (CMP-24).
 6. ~~Order progress, 6 or 4 steps~~ — answered 2026-11-15: 6 everywhere (HDR-6).
 7. ~~Primary-button contrast~~ — answered 2026-11-15: accepted as a brand decision (COL-13).
-8. **Motion register and tokens.** Nothing decided; no duration or easing tokens. The owner keeps
-   it open and will come back to it (2026-11-15).
+8. ~~Motion register and tokens~~ — answered 2026-11-17: between restrained and playful, light
+   overshoot on touched small things (MOT-1); the values in MOT-2 are still a proposal.
 9. ~~Shadow values and card outline colour~~ — answered 2026-11-15: the kit values are the rule
    (SHP-5).
 10. **Home** is being redesigned: ten above-the-fold variants (section `4973:30698`), the owner's
