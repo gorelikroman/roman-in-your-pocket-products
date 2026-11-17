@@ -385,10 +385,34 @@ tint `text/brand-on-subtle`; a frame of the Jira-linked section `4292:24466` del
 
 ## 7. Motion register
 
-- **Register:** **not decided** — the owner keeps it open and will come back to it (2026-11-15). Until then: restrained — a transition
-  explains the interaction, no decorative motion (medical product, anxious users).
-- **Durations and easing:** none — no duration or easing tokens exist in Figma or in `dr-abc-ui`.
-- **Decided so far:** bottom sheets close by swipe-down as well as by the X; `NavBar` has a
+- **Register (owner, 2026-11-17):** between restrained and playful. Calm, short moves, plus
+  micro-animations with character: a **light overshoot (about 5 %)** on small things the finger has
+  just touched — a released button, the `Switch` thumb, the `SegmentedControl` thumb, a radio dot or a
+  tick popping in. **Never** an overshoot on sheets, dialogs, menus, errors or destructive actions:
+  those settle without bounce. The motion should read as made on purpose, not as a default.
+- **One motion set** — source `drabc-app-ds` `src/utils/motion.ts`; no other curve or duration:
+
+  | Token | Value | Use |
+  |---|---|---|
+  | `ease.out` | cubic-bezier(0.23, 1, 0.32, 1) | entrances, small state changes |
+  | `ease.inOut` | cubic-bezier(0.77, 0, 0.175, 1) | something that stays on screen and moves: soft start, sharp acceleration, soft landing |
+  | `ease.accelerate` | cubic-bezier(0.3, 0, 1, 1) | exits |
+  | `ease.drawer` | cubic-bezier(0.32, 0.72, 0, 1) | sheets settling |
+  | `duration.press` / `quick` / `standard` / `slow` | 120 / 180 / 240 / 300 ms | press · toggles, indicators, popovers · toasts, dialogs · sheets |
+  | `spring.lively` | stiffness 300, damping 24 (≈ 5 % overshoot) | the character: touched small things |
+  | `spring.settle` | stiffness 300, damping 35, no overshoot | sheets, anything that must not bounce |
+  | `pressScale` | 0.97 (buttons, chips) · 0.92 (icon button, checkbox, radio) | press feedback, springs back on release |
+
+  The numbers are a proposal that follows the owner's description; he has not judged them on a device yet.
+- **Interactions decided:** `SegmentedControl` — the selected thumb slides and can be dragged (follows
+  the finger, lands where the momentum points); `Switch` — soft start, sharp acceleration, soft landing,
+  the thumb stretches under the finger; `Tabs` — the underline slides to the selected tab, the pill
+  fill crossfades; dropdown lists and the calendar fade in and drop 6 px into place, leave faster.
+- **Always:** a change from the keyboard is a cut; nothing animates on first paint; exits are shorter
+  than entrances; transform and opacity only; under reduced motion movement becomes an instant change
+  and the state stays visible; a haptic tick on a segment change and a switch flip, never as the only
+  feedback.
+- **Decided earlier:** bottom sheets close by swipe-down as well as by the X; `NavBar` has a
   `Scrolled` state (reference Mix 1 scrolled `4219:17385`); How it works steps expand one at a time
   (`4200:16578…16628`). The Home category deck (pinned-deck scroll) is a prototype awaiting approval.
 
@@ -456,6 +480,6 @@ colours, radii and names on loose layers of the working section only):
 - Code (`dr-abc-ui`) is not synced with any decision after 2026-11-03.
 
 **Open questions for the owner** (numbered in `design-decisions.md`; Q1–Q7, Q9 and Q12 were
-answered on 2026-11-15): motion register and tokens (Q8, the owner will come back to it) · Home
+answered on 2026-11-15, Q8 on 2026-11-17): Home
 layout and category deck (Q10, decided in its own thread) · German copy for `t+` keys (Q11,
 copywriter).
