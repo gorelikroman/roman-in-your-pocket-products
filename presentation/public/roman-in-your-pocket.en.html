@@ -1,0 +1,660 @@
+<title>Roman in your Pocket</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* One long scroll: hero → inside (six parts with examples) → how it works (five steps) → how to use → in action. */
+:root{
+  --bg:#F2F4F3; --surface:#FFFFFF; --ink:#141B24; --muted:#56606C; --line:#D9DDE0; --soft:#E8EBEC;
+  --blue:#2457C5; --blue-soft:#E3EBFA; --orange:#C45A1C; --orange-soft:#F8E6DA;
+  --blocking:#B42F25; --blocking-soft:#F6DEDB; --warning:#9A6410; --warning-soft:#F4E8CF; --note:#5D6672; --note-soft:#E6E9EC;
+  --mock:#FFFFFF; --mock-ink:#1B222B; --mock-muted:#65707C; --mock-line:#DCE0E4; --mock-soft:#F1F3F5;
+  --code-bg:#141B24; --code-ink:#D8DEE6; --code-dim:#8C98A6; --code-ok:#8FB2FF; --code-hit:#F0A06A;
+  --k:1; --out:cubic-bezier(.2,.8,.2,1);
+  --display:"Manrope",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F141A; --surface:#171E27; --ink:#E6EAEE; --muted:#A1ACB8; --line:#2A3440; --soft:#1F2833;
+    --blue:#8FB2FF; --blue-soft:#1C2A45; --orange:#F09A62; --orange-soft:#3A2618;
+    --blocking:#F08A80; --blocking-soft:#3D1D1A; --warning:#E3B35C; --warning-soft:#35290F; --note:#AAB4BF; --note-soft:#26303B;
+    --mock:#1D2530; --mock-ink:#E3E7EB; --mock-muted:#A0AAB5; --mock-line:#344150; --mock-soft:#252F3B;
+    --code-bg:#0A0E13;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F141A; --surface:#171E27; --ink:#E6EAEE; --muted:#A1ACB8; --line:#2A3440; --soft:#1F2833;
+  --blue:#8FB2FF; --blue-soft:#1C2A45; --orange:#F09A62; --orange-soft:#3A2618;
+  --blocking:#F08A80; --blocking-soft:#3D1D1A; --warning:#E3B35C; --warning-soft:#35290F; --note:#AAB4BF; --note-soft:#26303B;
+  --mock:#1D2530; --mock-ink:#E3E7EB; --mock-muted:#A0AAB5; --mock-line:#344150; --mock-soft:#252F3B;
+  --code-bg:#0A0E13;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:0 72px}
+.wrap{max-width:1040px; margin:0 auto}
+h1,h2,h3{font-family:var(--display); margin:0; text-wrap:balance}
+p{margin:0}
+code{font-family:var(--mono); font-size:.88em}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+a{color:var(--blue)}
+
+/* nav */
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:10; background:var(--bg)}
+.nav{position:sticky; top:env(safe-area-inset-top, 0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); padding-block:10px; display:flex; gap:6px; overflow-x:auto}
+.nav a{flex:none; text-decoration:none; color:var(--ink); font-size:14px; font-weight:500; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface)}
+.nav a:hover{border-color:var(--blue); color:var(--blue)}
+
+/* hero */
+.hero{padding-block:44px 28px; display:grid; gap:14px}
+.eyebrow{font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--blue)}
+.hero h1{font-size:clamp(36px,6vw,60px); font-weight:800; letter-spacing:-.025em; line-height:1.02}
+.lede{font-size:19px; color:var(--muted); max-width:62ch}
+.lede b{color:var(--ink); font-weight:600}
+.stats{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:8px}
+.stat{background:var(--surface); padding:14px 16px}
+.stat b{display:block; font-family:var(--display); font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.stat span{font-size:13px; color:var(--muted)}
+@media (max-width:720px){ .stats{grid-template-columns:repeat(2,1fr)} .stat:last-child{grid-column:span 2} }
+
+/* sections */
+section.part{padding-block:44px 8px; scroll-margin-top:60px; display:grid; gap:18px}
+.part > header{display:grid; gap:8px}
+.part h2{font-size:clamp(26px,3.6vw,34px); font-weight:800; letter-spacing:-.015em}
+.part > header p{color:var(--muted); max-width:66ch; font-size:17px}
+
+/* inside grid */
+.inside{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:900px){ .inside{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .inside{grid-template-columns:1fr} }
+.box{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; display:grid; gap:12px; align-content:start; min-width:0}
+.box h3{font-size:19px; font-weight:700; display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.box h3 small{font-family:var(--mono); font-size:12px; font-weight:400; color:var(--muted); white-space:nowrap}
+.box .what{font-size:14px; color:var(--muted)}
+.ex{display:grid; gap:8px; padding:0; margin:0; list-style:none}
+.ex li{border-top:1px solid var(--line); padding-top:8px; font-size:14px; display:grid; gap:2px}
+.ex li b{font-weight:600}
+.ex li .src{font-family:var(--mono); font-size:11.5px; color:var(--muted)}
+.ex li .arrow{color:var(--muted)}
+.sev{font-family:var(--mono); font-size:11px; font-weight:600; padding:1px 6px; border-radius:5px; white-space:nowrap}
+.sev.blocking{background:var(--blocking-soft); color:var(--blocking)}
+.sev.warning{background:var(--warning-soft); color:var(--warning)}
+.sev.note{background:var(--note-soft); color:var(--note)}
+.myth{text-decoration:line-through; text-decoration-color:var(--orange); color:var(--muted)}
+
+/* flow */
+.flow{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; counter-reset:step}
+@media (max-width:900px){ .flow{grid-template-columns:1fr} }
+.step{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:8px; align-content:start; position:relative; min-width:0}
+.step::before{counter-increment:step; content:counter(step); font-family:var(--mono); font-size:12px; font-weight:600; color:var(--blue); border:1px solid var(--blue); border-radius:999px; width:24px; height:24px; display:grid; place-items:center}
+.step b{font-family:var(--display); font-size:16px}
+.step p{font-size:14px; color:var(--muted)}
+.step .out{font-family:var(--mono); font-size:12px; color:var(--ink); background:var(--soft); border-radius:8px; padding:6px 8px; overflow-wrap:anywhere}
+.request{display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:15px}
+.bubble{background:var(--blue); color:#fff; border-radius:14px 14px 4px 14px; padding:10px 14px; font-size:15px}
+:root[data-theme="dark"] .bubble{color:#0F141A}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .bubble{color:#0F141A} }
+.rules-note{font-size:14px; color:var(--muted); max-width:80ch}
+
+/* use */
+.use{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:800px){ .use{grid-template-columns:1fr} }
+.cmd{display:grid; gap:8px}
+.cmd .line{display:flex; gap:8px; align-items:center; background:var(--code-bg); color:var(--code-ink); border-radius:10px; padding:10px 12px; font-family:var(--mono); font-size:13px; min-width:0}
+.cmd .line span{flex:1; overflow-x:auto; white-space:nowrap}
+.cmd .line button{flex:none; background:transparent; border:1px solid #3A4656; color:var(--code-ink); border-radius:6px; padding:3px 8px; font-size:12px; cursor:pointer}
+.chat{display:grid; gap:10px}
+.say{display:grid; gap:4px}
+.say .who{font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.say .bubble{justify-self:start; max-width:100%}
+.tips{display:grid; gap:6px; font-size:14px; color:var(--muted); padding-left:18px; margin:0}
+.tips b{color:var(--ink); font-weight:600}
+
+/* finding card */
+.finding{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--blocking); border-radius:12px; padding:18px; display:grid; gap:10px}
+.finding h3{font-size:18px}
+.kv{display:grid; grid-template-columns:150px 1fr; gap:6px 14px; font-size:14px; margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0; min-width:0; overflow-wrap:anywhere}
+@media (max-width:560px){ .kv{grid-template-columns:1fr} .kv dt{margin-top:6px} }
+.swatch{display:inline-block; padding:1px 8px; border-radius:5px; background:#fff; color:#9AA1AE; border:1px solid #DCE0E4; font-weight:500}
+
+/* demos */
+.demos{display:grid; gap:14px}
+.demo{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:12px}
+.demo-head{display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between}
+.demo-head h3{font-size:17px}
+.role{font-size:12px; font-weight:600; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:1px 8px}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:640px){ .pair{grid-template-columns:1fr} }
+.side{border-radius:10px; padding:12px; display:grid; gap:8px; align-content:start; min-width:0}
+.side.before{background:var(--orange-soft)} .side.after{background:var(--blue-soft)}
+.side h4{margin:0; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+.side.before h4{color:var(--orange)} .side.after h4{color:var(--blue)}
+.side .cap{font-size:13.5px}
+.rule{font-family:var(--mono); font-size:12px; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center}
+.slow{display:inline-flex; gap:8px; align-items:center; font-size:14px; cursor:pointer; border:1px solid var(--line); border-radius:999px; padding:5px 12px; background:var(--surface); width:max-content}
+.slow input{accent-color:var(--blue); margin:0}
+
+.mock{background:var(--mock); color:var(--mock-ink); border:1px solid var(--mock-line); border-radius:10px; padding:12px; font-size:14px; position:relative; min-width:0}
+.mock.tall{min-height:160px}
+.muted{color:var(--mock-muted)}
+.status{font-size:13px; min-height:1.4em; color:var(--mock-muted)}
+.status.bad{color:var(--blocking)} .status.ok{color:var(--blue)}
+.mbtn{border:1px solid var(--mock-line); background:var(--mock); color:var(--mock-ink); border-radius:8px; padding:7px 13px; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px}
+.mbtn.primary{background:#2457C5; border-color:#2457C5; color:#fff}
+.spin{display:inline-block; width:14px; height:14px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin .7s linear infinite; flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dd{position:relative; display:inline-block}
+.dd-menu{position:absolute; top:calc(100% + 6px); left:0; z-index:2; margin:0; padding:6px; list-style:none; min-width:180px; background:var(--mock); border:1px solid var(--mock-line); border-radius:10px; box-shadow:0 8px 24px rgba(10,20,30,.16); opacity:0; visibility:hidden; transform:scale(.96); transform-origin:top left}
+.dd-menu li{padding:6px 10px; border-radius:6px}
+.dd.open .dd-menu{opacity:1; visibility:visible; transform:none}
+.dd[data-v="calm"] .dd-menu{transition:opacity calc(180ms * var(--k)) ease-out, transform calc(180ms * var(--k)) var(--out), visibility 0s linear calc(180ms * var(--k))}
+.dd.open[data-v] .dd-menu{transition-delay:0s}
+.rc{display:grid; gap:8px}
+.rcard{display:flex; gap:10px; align-items:flex-start; border:1px solid var(--mock-line); border-radius:10px; padding:9px 11px; background:var(--mock)}
+.rcard input{margin:3px 0 0; accent-color:#2457C5}
+.rcard b{display:block; font-weight:600} .rcard span{color:var(--mock-muted); font-size:13px}
+label.rcard{cursor:pointer}
+label.rcard:has(input:checked){border-color:#2457C5; box-shadow:inset 0 0 0 1px #2457C5}
+.inp{border:1px solid var(--mock-line); border-radius:8px; padding:8px 10px; background:var(--mock); color:var(--mock-ink); font:inherit; font-size:14px; width:100%}
+.fl{position:relative}
+.fl .inp{padding:22px 11px 6px; line-height:20px}
+.fl label{position:absolute; left:12px; top:6px; font-size:15px; line-height:20px; color:var(--mock-muted); pointer-events:none; transform-origin:left top; transform:translateY(9px); transition:transform calc(160ms * var(--k)) var(--out), color calc(160ms * var(--k)) ease-out}
+.fl .inp::placeholder{color:transparent; transition:color calc(160ms * var(--k)) ease-out}
+.fl .inp:focus::placeholder{color:var(--mock-muted)}
+.fl .inp:focus + label,.fl .inp:not(:placeholder-shown) + label{transform:translateY(-1px) scale(.8)}
+.fl .inp:focus + label{color:var(--blue)}
+.fl .inp:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 1px var(--blue)}
+.mail{display:flex; justify-content:space-between; gap:8px; align-items:center; padding:7px 0; border-bottom:1px solid var(--mock-line); font-size:13.5px}
+.confirm{display:flex; gap:6px; align-items:center; font-size:13px}
+.toast{margin-top:10px; background:#1B222B; color:#fff; border-radius:8px; padding:8px 12px; font-size:13px; display:flex; justify-content:space-between; gap:10px; align-items:center}
+.toast button{background:none; border:0; color:#9DB8F5; font-weight:600; cursor:pointer; padding:0}
+.pop{position:relative; display:inline-block}
+.pop-panel{position:absolute; top:calc(100% + 6px); left:0; z-index:2; width:min(230px,70vw); background:var(--mock); border:1px solid var(--mock-line); border-radius:10px; padding:8px; box-shadow:0 8px 24px rgba(10,20,30,.16)}
+.pop-panel textarea{width:100%; height:60px; resize:none; font:inherit; font-size:13px; border:1px solid var(--mock-line); border-radius:6px; padding:6px; background:var(--mock); color:var(--mock-ink)}
+
+/* regression */
+.shots{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+@media (max-width:700px){ .shots{grid-template-columns:1fr} }
+.shots figure{margin:0; display:grid; gap:6px}
+.shots img{width:100%; height:auto; border-radius:8px; border:1px solid var(--line); background:#fff; display:block}
+.shots figcaption{font-size:13px; color:var(--muted)}
+.nums{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+@media (max-width:700px){ .nums{grid-template-columns:1fr} }
+.num{background:var(--soft); border-radius:10px; padding:12px 14px; display:grid; gap:2px}
+.num b{font-family:var(--display); font-size:24px; font-weight:800; font-variant-numeric:tabular-nums}
+.num span{font-size:13.5px; color:var(--muted)}
+.verdict{border-left:3px solid var(--blue); padding:2px 0 2px 14px; font-size:15px; max-width:80ch}
+.tokens{width:100%; border-collapse:collapse; font-size:14px}
+.tokens th,.tokens td{text-align:left; padding:8px 8px; border-bottom:1px solid var(--line); vertical-align:top}
+.tokens th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.tokens td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+.scroll{overflow-x:auto}
+.chip{display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:-1px; margin-right:6px; border:1px solid var(--line)}
+
+footer.end{margin-top:48px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; display:grid; gap:6px; max-width:80ch}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+/* story pass: one idea per band, plain words, big type */
+body{font-size:18px; line-height:1.6}
+.wrap{max-width:920px}
+.hero{padding-block:88px 56px; gap:22px}
+.hero h1{font-size:clamp(40px,7.5vw,76px); line-height:1.02}
+.lede{font-size:clamp(19px,2.4vw,23px); max-width:34ch; color:var(--muted)}
+.lede b{color:var(--ink)}
+section.part{padding-block:96px 0; gap:36px}
+.part h2{font-size:clamp(30px,4.6vw,46px); letter-spacing:-.02em; line-height:1.1}
+.part > header p{font-size:19px; max-width:44ch}
+
+/* what it knows */
+.knows{display:grid; grid-template-columns:repeat(2,1fr); gap:20px}
+@media (max-width:680px){ .knows{grid-template-columns:1fr} }
+.know{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; display:grid; gap:14px; align-content:start}
+.know .big{font-family:var(--display); font-size:56px; font-weight:800; letter-spacing:-.03em; line-height:1; color:var(--blue)}
+.know h3{font-size:22px; font-weight:700}
+.know p{font-size:16.5px; color:var(--muted)}
+.know q{color:var(--ink); quotes:"“" "”"}
+.fingers{display:flex; gap:10px; align-items:flex-end}
+.fingers span{display:grid; place-items:center; border-radius:10px; border:2px dashed var(--blue); color:var(--blue); font-size:13px; font-weight:600}
+.pale{display:inline-flex; gap:8px; align-items:center; font-weight:600}
+.pale i{font-style:normal; padding:4px 10px; border-radius:8px; background:#fff; border:1px solid #DCE0E4}
+
+/* how: chat */
+.steps3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+@media (max-width:680px){ .steps3{grid-template-columns:1fr} }
+.s3{display:grid; gap:8px}
+.s3 .n{font-family:var(--display); font-weight:800; font-size:15px; color:var(--blue)}
+.s3 b{font-family:var(--display); font-size:21px; line-height:1.2}
+.s3 p{font-size:16px; color:var(--muted)}
+.convo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:20px; align-items:start}
+@media (max-width:760px){ .convo{grid-template-columns:1fr} }
+.screen{background:#FFFFFF; color:#1B222B; border:1px solid #DCE0E4; border-radius:18px; padding:22px; display:grid; gap:12px; box-shadow:0 10px 30px rgba(20,27,36,.08)}
+.screen .t{font-family:var(--display); font-weight:700; font-size:19px}
+.screen .fld{display:grid; gap:4px}
+.screen .fld small{color:#B4BAC4; font-size:13px}
+.screen .fld div{border:1px solid #DCE0E4; border-radius:8px; padding:9px 11px; font-size:15px}
+.screen .tiny{justify-self:start; background:#F59200; color:#fff; border-radius:7px; padding:5px 12px; font-size:13px; font-weight:600}
+.screen .cap{font-size:12px; color:#8A929C}
+.reply{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:22px; display:grid; gap:16px}
+.reply .from{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.item{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; align-items:baseline}
+.dot{width:12px; height:12px; border-radius:50%; display:inline-block; transform:translateY(1px)}
+.dot.r{background:#D64035} .dot.y{background:#E0A526} .dot.g{background:#9AA3AD}
+.item b{font-size:17px}
+.item p{grid-column:2; font-size:15.5px; color:var(--muted)}
+.item em{font-style:normal; font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase}
+.item em.r{color:var(--blocking)} .item em.y{color:var(--warning)} .item em.g{color:var(--note)}
+.reply .why{font-size:14px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px}
+
+/* use */
+.asks{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+@media (max-width:680px){ .asks{grid-template-columns:1fr} }
+.ask{display:grid; gap:8px}
+.ask .who{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.ask .bubble{justify-self:start; font-size:17px; padding:12px 16px}
+details.setup{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:14px 18px}
+details.setup summary{cursor:pointer; font-weight:600; font-size:16px}
+details.setup .cmd{margin-top:12px}
+
+/* action */
+.demos{gap:32px}
+.demo{padding:26px; gap:18px; border-radius:20px}
+.demo-head h3{font-size:22px}
+.side{padding:16px; gap:10px}
+.side .cap{font-size:15.5px}
+.story{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; display:grid; gap:18px}
+.story h3{font-size:24px}
+.story > p{font-size:17px; color:var(--muted); max-width:52ch}
+.ba{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+@media (max-width:620px){ .ba{grid-template-columns:1fr} }
+.ba figure{margin:0; display:grid; gap:8px}
+.ba img{width:100%; height:auto; border-radius:10px; border:1px solid var(--line); background:#fff; display:block}
+.ba figcaption{font-size:14px; color:var(--muted)}
+.said{font-size:18px; border-left:4px solid var(--blue); padding:2px 0 2px 16px; max-width:50ch}
+footer.end{margin-top:96px; font-size:15px}
+
+/* library */
+.much{display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+@media (max-width:820px){ .much{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:480px){ .much{grid-template-columns:repeat(2,1fr)} }
+.much div{background:var(--surface); padding:18px 16px; display:grid; gap:2px; align-content:start}
+.much b{font-family:var(--display); font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.1}
+.much span{font-size:14px; color:var(--muted); line-height:1.35}
+.lib{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:28px; background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:28px; align-items:start}
+@media (max-width:820px){ .lib{grid-template-columns:1fr} }
+.lib-ask{display:grid; gap:14px}
+.lib-label{font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.lib-reqs{display:grid; gap:8px}
+.req{text-align:left; border:1px solid var(--line); background:var(--bg); border-radius:14px; padding:10px 14px; font-size:15.5px; cursor:pointer; line-height:1.35}
+.req[aria-checked="true"]{background:var(--blue); border-color:var(--blue); color:var(--surface)}
+.lib-took{display:grid; gap:2px; margin-top:6px}
+.lib-took b{font-family:var(--display); font-size:44px; font-weight:800; color:var(--orange); line-height:1; font-variant-numeric:tabular-nums}
+.lib-took span{font-size:15px; color:var(--muted)}
+.lib-list{font-size:15px; color:var(--ink); line-height:1.55}
+.shelves{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:26px 28px; min-width:0}
+@media (max-width:560px){ .shelves{grid-template-columns:1fr} }
+.shelf{display:grid; gap:8px; min-width:0}
+.shelf-name{font-size:14px; color:var(--muted)}
+.shelf-name b{color:var(--ink); font-weight:600}
+.books{display:flex; flex-wrap:wrap; align-items:flex-end; gap:4px; border-bottom:8px solid #8A7660; padding-bottom:0; min-height:96px}
+.book{width:22px; border-radius:3px 3px 1px 1px; background:var(--soft); border:1px solid var(--line); transition:background-color .25s ease-out, transform .25s var(--out)}
+.book.wide{width:44px}
+.book.lit{transform:translateY(-6px)}
+.book.lit.c-router{background:#141B24; border-color:#141B24}
+.book.lit.c-method{background:#2457C5; border-color:#2457C5}
+.book.lit.c-lens{background:#E4803A; border-color:#E4803A}
+.book.lit.c-tpl{background:#5B8BEF; border-color:#5B8BEF}
+.book.lit.c-prod{background:#F2B27A; border-color:#F2B27A}
+.book.lit.c-brain{background:#1E8C63; border-color:#1E8C63}
+:root[data-theme="dark"] .book.lit.c-router{background:#E6EAEE; border-color:#E6EAEE}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .book.lit.c-router{background:#E6EAEE; border-color:#E6EAEE} }
+@media (prefers-reduced-motion: reduce){ .book{transition:none} .book.lit{transform:none} }
+
+.lib-stats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.lib-stats div{background:var(--bg); border-radius:12px; padding:10px 12px; display:grid; gap:0}
+.lib-stats b{font-family:var(--display); font-size:24px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.15}
+.lib-stats span{font-size:13.5px; color:var(--muted); line-height:1.3}
+
+/* next */
+.next{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px}
+@media (max-width:820px){ .next{grid-template-columns:1fr} }
+.nx{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:26px; display:grid; gap:14px; align-content:start}
+.nx .tag{justify-self:start; font-size:13px; font-weight:600; border-radius:999px; padding:3px 12px; border:1px solid var(--orange); color:var(--orange)}
+.nx .tag.ready{border-color:var(--blue); color:var(--blue)}
+.nx h3{font-size:22px; line-height:1.2}
+.nx p{font-size:16px; color:var(--muted)}
+.nx ul{margin:0; padding-left:18px; display:grid; gap:6px; font-size:15.5px}
+
+/* roles */
+.roles{display:flex; flex-wrap:wrap; gap:8px}
+.rtab{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:9px 18px; font-size:16px; font-weight:600; cursor:pointer}
+.rtab[aria-selected="true"]{background:var(--ink); border-color:var(--ink); color:var(--bg)}
+.rpanel{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+@media (max-width:680px){ .rpanel{grid-template-columns:1fr} }
+.qa{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:18px; display:grid; gap:10px; align-content:start}
+.qa .bubble{justify-self:start; font-size:16.5px; padding:10px 15px; max-width:100%}
+.qa p{font-size:15.5px; color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">A plugin for Claude</p>
+    <h1>Roman in your Pocket</h1>
+    <p class="lede">A senior design reviewer in your pocket, inside Claude. <b>Show it a screen and get an honest review:</b> what is wrong, why, and how to fix it.</p>
+  </header>
+
+  <nav class="nav" aria-label="Sections">
+    <a href="#inside">What’s inside</a><a href="#knows">What it knows</a><a href="#how">How it works</a><a href="#use">How to ask</a><a href="#action">In action</a><a href="#next">Your product</a>
+  </nav>
+
+  <section class="part" id="inside">
+    <header>
+      <p class="eyebrow">What’s inside</p>
+      <h2>The plugin is a library, Claude is the librarian</h2>
+      <p>Inside is a whole library of design knowledge. Claude doesn’t read all of it: for each request it takes only the volumes it needs off the shelf.</p>
+    </header>
+    <div class="much">
+      <div><b>36</b><span>volumes</span></div>
+      <div><b>410</b><span>rules</span></div>
+      <div><b>266</b><span>checks</span></div>
+      <div><b>72</b><span>facts about perception</span></div>
+      <div><b>79</b><span>myths taken apart</span></div>
+      <div><b>125k</b><span>words — about two thick books</span></div>
+    </div>
+    <div class="lib">
+      <div class="lib-ask">
+        <p class="lib-label">Pick a request</p>
+        <div class="lib-reqs" role="radiogroup" aria-label="Request">
+          <button class="req" role="radio" aria-checked="true" data-req="review">“Review the payment form in our app”</button>
+          <button class="req" role="radio" aria-checked="false" data-req="build">“Build the sort menu”</button>
+          <button class="req" role="radio" aria-checked="false" data-req="spec">“What did I miss in the orders screen ticket?”</button>
+          <button class="req" role="radio" aria-checked="false" data-req="test">“Write test cases for checkout”</button>
+        </div>
+        <div class="lib-took"><b id="lib-count">0 of 36</b><span>volumes Claude took off the shelf</span></div>
+        <div class="lib-stats" id="lib-stats"></div>
+        <p class="lib-list" id="lib-list"></p>
+      </div>
+      <div class="shelves" id="shelves" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="part" id="knows">
+    <header>
+      <p class="eyebrow">What it knows</p>
+      <h2>Four things it keeps in mind</h2>
+    </header>
+    <div class="knows">
+      <article class="know">
+        <div class="big">4</div>
+        <h3>How people see and remember</h3>
+        <p>For example: people hold about four things in mind, not seven as is often said. So <q>comparing more than four plans at once is hard</q>.</p>
+      </article>
+      <article class="know">
+        <div class="fingers" aria-hidden="true"><span style="width:28px;height:28px;font-size:11px">24</span><span style="width:44px;height:44px">44</span></div>
+        <h3>Rules of good interfaces</h3>
+        <p>For example: <q>a button must be easy to hit with a finger</q> — on a phone that is a square of about 44 × 44 points.</p>
+      </article>
+      <article class="know">
+        <div class="pale" aria-hidden="true"><i style="color:#B4BAC4">Address</i><span style="color:var(--muted)">→</span><i style="color:#4A5360">Address</i></div>
+        <h3>Accessible to everyone</h3>
+        <p>For example: <q>text must be readable in sunlight and by people with low vision</q>. Pale grey on white won’t do.</p>
+      </article>
+      <article class="know">
+        <div class="big" style="color:var(--orange)">Yours</div>
+        <h3>Your product’s decisions</h3>
+        <p>For example: <q>in our app, red is only for what can’t be undone</q>. Each product is connected separately.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="part" id="how">
+    <header>
+      <p class="eyebrow">How it works</p>
+      <h2>You show it, it reviews</h2>
+    </header>
+    <div class="steps3">
+      <div class="s3"><span class="n">1</span><b>Show a screen</b><p>A screenshot, a link to a mockup or a page</p></div>
+      <div class="s3"><span class="n">2</span><b>It looks through the user’s eyes</b><p>And checks against everything it knows</p></div>
+      <div class="s3"><span class="n">3</span><b>You get a list</b><p>What to fix, why, and how urgent it is</p></div>
+    </div>
+    <div class="convo">
+      <div class="screen" aria-label="Example payment screen">
+        <span class="t">Payment</span>
+        <div class="fld"><small>Card number</small><div>4276 1600 1234 5678</div></div>
+        <div class="fld"><small>Name on card</small><div>Anna Smith</div></div>
+        <span class="tiny">Pay</span>
+        <span class="cap">example screen</span>
+      </div>
+      <div class="reply">
+        <span class="from">The critic’s reply · example</span>
+        <div class="item"><span class="dot r"></span><b>Field labels are barely visible</b><p>Grey on white is hard to read, especially in sunlight. Make the labels darker.</p><em class="r" style="grid-column:2">Fix before release</em></div>
+        <div class="item"><span class="dot y"></span><b>The “Pay” button is small</b><p>It is hard to hit with a finger. Make it full width.</p><em class="y" style="grid-column:2">Should fix</em></div>
+        <div class="item"><span class="dot g"></span><b>Nothing says the payment is secure</b><p>One line next to the button will ease the worry.</p><em class="g" style="grid-column:2">Minor</em></div>
+        <p class="why">Every point links to a rule, so there is no arguing about taste.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="use">
+    <header>
+      <p class="eyebrow">How to ask</p>
+      <h2>In plain words — something for every role</h2>
+      <p>The critic works out what you need. To bring in a connected product, just name it: “in our app”.</p>
+    </header>
+    <div class="roles" role="tablist" aria-label="Role">
+      <button class="rtab" role="tab" aria-selected="true" aria-controls="r-design" id="t-design">Designer</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-dev" id="t-dev">Developer</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-pm" id="t-pm">Product manager</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-qa" id="t-qa">QA</button>
+      <button class="rtab" role="tab" aria-selected="false" aria-controls="r-any" id="t-any">Anyone</button>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-design" aria-labelledby="t-design">
+      <div class="qa"><span class="bubble">Look at my onboarding mockup</span><p>→ a list of what to fix before handoff, from urgent to minor</p></div>
+      <div class="qa"><span class="bubble">Make three options for the home screen</span><p>→ three different directions and what each one is good at</p></div>
+      <div class="qa"><span class="bubble">Did I miss anything on this screen?</span><p>→ which states are missing: empty, loading, error, no access</p></div>
+      <div class="qa"><span class="bubble">It’s too loud, calm it down</span><p>→ step-by-step changes and what exactly is “shouting”</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-dev" aria-labelledby="t-dev" hidden>
+      <div class="qa"><span class="bubble">Build the sort menu properly</span><p>→ ready code: smooth opening, keyboard support, accessibility</p></div>
+      <div class="qa"><span class="bubble">Check my branch before review</span><p>→ what to fix in the UI code and why</p></div>
+      <div class="qa"><span class="bubble">Why does this button feel sluggish?</span><p>→ there is no response to the press, and how to add one</p></div>
+      <div class="qa"><span class="bubble">Which states does this component need?</span><p>→ loading, error, empty, disabled, with examples</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-pm" aria-labelledby="t-pm" hidden>
+      <div class="qa"><span class="bubble">What did I miss in the orders screen ticket?</span><p>→ scenarios and states the ticket doesn’t cover</p></div>
+      <div class="qa"><span class="bubble">Write acceptance criteria for the product card</span><p>→ points you can actually test, not “should be easy to use”</p></div>
+      <div class="qa"><span class="bubble">Can insurance be switched on by default?</span><p>→ no: a paid option can’t be chosen for the user, and why</p></div>
+      <div class="qa"><span class="bubble">How do we know the redesign worked?</span><p>→ what to measure, from which baseline, and when to roll back</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-qa" aria-labelledby="t-qa" hidden>
+      <div class="qa"><span class="bubble">What should I test in checkout?</span><p>→ a list of checks with steps and expected results</p></div>
+      <div class="qa"><span class="bubble">Make test cases for TestRail</span><p>→ a table you can import right away</p></div>
+      <div class="qa"><span class="bubble">Write up this bug</span><p>→ a bug report that cites the rule, so nobody argues</p></div>
+      <div class="qa"><span class="bubble">Check this page on a phone</span><p>→ clipped text, tiny buttons, pale labels</p></div>
+    </div>
+    <div class="rpanel" role="tabpanel" id="r-any" aria-labelledby="t-any" hidden>
+      <div class="qa"><span class="bubble">Explain why this screen is awkward</span><p>→ in plain words, tied to how perception works</p></div>
+      <div class="qa"><span class="bubble">Compare two options — which is better?</span><p>→ a choice with reasons, not “I just like it more”</p></div>
+      <div class="qa"><span class="bubble">What should we fix first?</span><p>→ the most urgent and cheapest fixes on top</p></div>
+    </div>
+    <details class="setup">
+      <summary>How to install — for whoever sets it up</summary>
+      <div class="cmd">
+        <div class="line"><span>claude plugin marketplace add gorelikroman/roman-in-your-pocket</span><button data-copy="claude plugin marketplace add gorelikroman/roman-in-your-pocket">Copy</button></div>
+        <div class="line"><span>claude plugin install roman-in-your-pocket@roman-in-your-pocket</span><button data-copy="claude plugin install roman-in-your-pocket@roman-in-your-pocket">Copy</button></div>
+      </div>
+    </details>
+  </section>
+
+  <section class="part" id="action">
+    <header>
+      <p class="eyebrow">In action</p>
+      <h2>Try it yourself</h2>
+      <p>On the left, how it often ends up; on the right, how the critic does it. Everything is clickable.</p>
+    </header>
+
+    <div class="demos">
+      <article class="demo">
+        <div class="demo-head"><h3>Menu</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Usually</h4><div class="mock tall"><div class="dd"><button class="mbtn" data-act="dd" aria-haspopup="menu" aria-expanded="false">Sort by ▾</button><ul class="dd-menu"><li>Newest first</li><li>Price: low to high</li><li>Top rated</li></ul></div></div><p class="cap">Pops up with a jolt</p></div>
+          <div class="side after"><h4>With the critic</h4><div class="mock tall"><div class="dd" data-v="calm"><button class="mbtn" data-act="dd" aria-haspopup="menu" aria-expanded="false">Sort by ▾</button><ul class="dd-menu"><li>Newest first</li><li>Price: low to high</li><li>Top rated</li></ul></div></div><p class="cap">Opens smoothly from the button</p></div>
+        </div>
+      </article>
+
+      <article class="demo">
+        <div class="demo-head"><h3>Input field</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Usually</h4><div class="mock" style="display:grid; gap:8px"><input class="inp" id="b-mail" placeholder="Email" value="anna@exa" aria-label="Email"><input class="inp" id="b-tel" placeholder="Phone" aria-label="Phone"></div><p class="cap">Start typing and you can’t tell what the field is</p></div>
+          <div class="side after"><h4>With the critic</h4><div class="mock" style="display:grid; gap:8px"><div class="fl"><input class="inp" id="a-mail" type="email" placeholder="name@example.com" value="anna@exa"><label for="a-mail">Email</label></div><div class="fl"><input class="inp" id="a-tel" type="tel" placeholder="(555) 123-4567"><label for="a-tel">Phone</label></div></div><p class="cap">The field name is always visible</p></div>
+        </div>
+      </article>
+
+      <article class="demo">
+        <div class="demo-head"><h3>Pay button</h3></div>
+        <div class="pair">
+          <div class="side before"><h4>Usually</h4><div class="mock pay" data-v="naive"><button class="mbtn primary" data-act="pay">Pay $24.90</button><p class="status" data-status>Click it several times fast</p></div><p class="cap">You can pay twice by accident</p></div>
+          <div class="side after"><h4>With the critic</h4><div class="mock pay" data-v="smart"><button class="mbtn primary" data-act="pay">Pay $24.90</button><p class="status" data-status>Click it several times fast</p></div><p class="cap">A second click won’t go through</p></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="part" id="next">
+    <header>
+      <p class="eyebrow">Your product</p>
+      <h2>Teach it your design system</h2>
+      <p>Out of the box it judges by universal rules. Connect your product and it also judges by your components, your voice and the decisions your team already made.</p>
+    </header>
+    <div class="next">
+      <article class="nx">
+        <span class="tag ready">1</span>
+        <h3>Copy the template</h3>
+        <p>Press “Use this template” and make a private repository for your products.</p>
+        <ul>
+          <li><a href="https://github.com/gorelikroman/roman-in-your-pocket-pack-template">roman-in-your-pocket-pack-template</a></li>
+        </ul>
+      </article>
+      <article class="nx">
+        <span class="tag ready">2</span>
+        <h3>Describe your product</h3>
+        <p>In your copy, run <code>/roman-in-your-pocket:new-product</code> and the name of your product.</p>
+        <ul>
+          <li>it asks where your library, tokens and screens are</li>
+          <li>it studies your shipped screens and writes up what recurs</li>
+          <li>no special design-system format is needed</li>
+        </ul>
+      </article>
+      <article class="nx">
+        <span class="tag ready">3</span>
+        <h3>Let the owner decide</h3>
+        <p>The first write-up is a proposal. The product owner answers a few rounds of questions, and the decisions become rules.</p>
+        <ul>
+          <li>push the repository; teammates install your product with two commands</li>
+          <li>then: “review the checkout in &lt;your product&gt;”</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <footer class="end">
+    <p>Inside: 410 rules and 72 facts about how people see and think. <a href="https://github.com/gorelikroman/roman-in-your-pocket">github.com/gorelikroman/roman-in-your-pocket</a></p>
+  </footer>
+</div>
+
+
+<script>
+(function(){
+const stat=(root,text,cls)=>{const s=root.querySelector('[data-status]'); if(s){s.textContent=text; s.className='status'+(cls?' '+cls:'')}};
+
+document.addEventListener('click',e=>{
+  document.querySelectorAll('.dd.open').forEach(d=>{if(!d.contains(e.target)){d.classList.remove('open'); d.querySelector('button').setAttribute('aria-expanded','false')}});
+  document.querySelectorAll('.pop').forEach(p=>{
+    const panel=p.querySelector('.pop-panel'); if(panel.hidden||p.contains(e.target)) return;
+    panel.hidden=true; const ta=panel.querySelector('textarea'), had=ta.value.trim().length>0, root=p.closest('.mock');
+    if(p.dataset.v==='lose'){ta.value=''; stat(root,had?'Draft lost':'Closed',had?'bad':'')}
+    else stat(root,had?'Closed, draft kept':'Closed',had?'ok':'');
+  });
+  const c=e.target.closest('[data-copy]');
+  if(c){const t=c.dataset.copy; const done=()=>{c.textContent='Copied'; setTimeout(()=>c.textContent='Copy',1500)};
+    try{navigator.clipboard.writeText(t).then(done,()=>{const r=document.createRange(); r.selectNodeContents(c.previousElementSibling); const s=getSelection(); s.removeAllRanges(); s.addRange(r)})}catch(err){}
+    return}
+  const t=e.target.closest('[data-act]'); if(!t) return; const act=t.dataset.act;
+  if(act==='dd'){const d=t.closest('.dd'); t.setAttribute('aria-expanded',d.classList.toggle('open'))}
+  if(act==='miss'&&e.target.tagName!=='INPUT'){const root=t.closest('.mock'); stat(root,'Missed the circle — selection unchanged','bad'); clearTimeout(root._t); root._t=setTimeout(()=>stat(root,''),1600)}
+  if(act==='pay'){const root=t.closest('.pay');
+    if(root.dataset.v==='naive'){root._n=(root._n||0)+1; stat(root,'Requests sent: '+root._n); clearTimeout(root._t); root._t=setTimeout(()=>{stat(root,root._n>1?`Charged ${root._n} times × $24.90`:'Charged $24.90',root._n>1?'bad':''); root._n=0},1200)}
+    else{if(root._busy) return; root._busy=true; t.setAttribute('aria-busy','true'); t.innerHTML='<span class="spin" aria-hidden="true"></span>Paying…'; stat(root,'Requests sent: 1');
+      setTimeout(()=>{t.removeAttribute('aria-busy'); t.textContent='Pay $24.90'; stat(root,'Paid · receipt sent by email','ok'); root._busy=false},1500)}}
+  if(act==='arch'){const root=t.closest('[data-undo]'), row=t.closest('.mail'), box=t.parentElement;
+    if(root.dataset.undo==='b') box.innerHTML='Sure? <button class="mbtn" data-act="yes">Yes</button><button class="mbtn" data-act="no">No</button>';
+    else{row.hidden=true; const slot=root.querySelector('.toast-slot'); slot.innerHTML=`<div class="toast"><span>“${row.firstElementChild.textContent}” archived</span><button data-act="undo">Undo</button></div>`; slot._row=row; clearTimeout(slot._t); slot._t=setTimeout(()=>{slot.innerHTML=''},5000)}}
+  if(act==='yes') t.closest('.mail').hidden=true;
+  if(act==='no') t.parentElement.innerHTML='<button class="mbtn" data-act="arch">Archive</button>';
+  if(act==='undo'){const slot=t.closest('.toast-slot'); if(slot._row) slot._row.hidden=false; slot.innerHTML=''}
+  if(act==='pop'){const panel=t.closest('.pop').querySelector('.pop-panel'); panel.hidden=!panel.hidden; if(!panel.hidden) panel.querySelector('textarea').focus()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape') document.querySelectorAll('.dd.open').forEach(d=>{d.classList.remove('open'); const b=d.querySelector('button'); b.setAttribute('aria-expanded','false'); b.focus()})});
+})();
+// Library: 36 volumes on six shelves; each request lights the ones Claude reads.
+(function(){
+const SHELVES = [
+  { key:'router', name:'Router', cls:'c-router', wide:true, books:[['skill','Router: picks the mode, role, language and product']] },
+  { key:'method', name:'Methods', cls:'c-method', books:[['m-review','Review method'],['m-build','Build method'],['m-spec','Spec method'],['m-test','Test method'],['m-lang','Reply language rule']] },
+  { key:'lens', name:'Lenses — 410 rules', cls:'c-lens', books:[
+    ['l01','Hierarchy',44],['l02','Typography',22],['l03','Colour',23],['l04','Task fit',16],['l05','States and errors',44],['l06','Trust and choice',27],['l07','Copy',19],
+    ['l08','Forms',27],['l09','Motion',71],['l10','Accessibility',34],['l11','Components',41],['l12','Mobile',20],['l13','Product and metrics',6],['l14','Devices',16] ] },
+  { key:'tpl', name:'Reply templates', cls:'c-tpl', books:[
+    ['t-card','Screen card'],['t-find','Finding'],['t-report','Report'],['t-log','Decisions log'],['t-board','Decision board'],['t-brief','Brief'],
+    ['t-note','Build note'],['t-spec','UX spec'],['t-plan','Test plan'],['t-bug','Bug report'],['t-setup','Project setup'] ] },
+  { key:'prod', name:'Products', cls:'c-prod', books:[['p-readme','How products work'],['p-tpl1','Product template'],['p-tpl2','Decisions template']] },
+  { key:'brain', name:'Brain and catalog', cls:'c-brain', wide:true, books:[['brain','How people see and think: 72 facts, 79 myths'],['cat','Catalog: 266 checks']] },
+];
+const REQ = {
+  review:['skill','m-review','l03','l05','l06','l07','l08','l10','t-card','t-find','t-report','t-board','brain'],
+  build:['skill','m-build','l09','l10','l11','t-note','brain'],
+  spec:['skill','m-spec','l05','l13','t-spec','cat'],
+  test:['skill','m-test','l08','l10','t-plan','t-bug','cat'],
+};
+const host = document.getElementById('shelves');
+if(!host) return;
+const names = {}, rules = {};
+const EXTRA = { brain:['facts about perception',72], cat:['checks with IDs',266] };
+host.innerHTML = SHELVES.map(s => `<div class="shelf"><span class="shelf-name"><b>${s.name}</b> · ${s.books.length}</span><div class="books">${
+  s.books.map(([id,title,n], i) => { names[id] = title; if(n) rules[id] = n;
+    const h = 64 + ((i * 37 + id.length * 11) % 30);
+    return `<span class="book ${s.cls}${s.wide ? ' wide' : ''}" data-id="${id}" title="${title}" style="height:${h}px"></span>`; }).join('')
+}</div></div>`).join('');
+const total = SHELVES.reduce((n, s) => n + s.books.length, 0);
+function pick(key){
+  const lit = new Set(REQ[key]);
+  host.querySelectorAll('.book').forEach(b => b.classList.toggle('lit', lit.has(b.dataset.id)));
+  document.getElementById('lib-count').textContent = `${lit.size} of ${total}`;
+  document.getElementById('lib-list').textContent = REQ[key].map(id => names[id]).join(' · ');
+  const r = REQ[key].reduce((n, id) => n + (rules[id] || 0), 0);
+  const tpl = REQ[key].filter(id => id.startsWith('t-')).length;
+  const parts = [[r, 'of 410 rules']];
+  for (const id of REQ[key]) if (EXTRA[id]) parts.push([EXTRA[id][1], EXTRA[id][0]]);
+  if (tpl) parts.push([tpl, tpl === 1 ? 'reply template' : 'reply templates']);
+  document.getElementById('lib-stats').innerHTML = parts.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('');
+  document.querySelectorAll('.req').forEach(r => r.setAttribute('aria-checked', r.dataset.req === key));
+}
+document.querySelectorAll('.req').forEach(r => r.addEventListener('click', () => pick(r.dataset.req)));
+pick('review');
+
+// Role tabs
+const tabs = [...document.querySelectorAll('.rtab')];
+function show(tab){
+  tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); document.getElementById(t.getAttribute('aria-controls')).hidden = !on; });
+}
+tabs.forEach(t => t.addEventListener('click', () => show(t)));
+document.querySelector('.roles').addEventListener('keydown', e => {
+  if(!['ArrowRight','ArrowLeft'].includes(e.key)) return;
+  const i = tabs.indexOf(document.activeElement); if(i < 0) return;
+  const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); show(n);
+});
+})();
+</script>
