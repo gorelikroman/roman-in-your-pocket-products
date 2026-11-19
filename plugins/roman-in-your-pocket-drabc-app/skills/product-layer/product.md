@@ -1,7 +1,7 @@
 # Product layer — Dr.ABC Application
 
 > Loaded on top of the universal rules whenever work concerns the Dr.ABC mobile app
-> (design-critic `products/README.md`). A row here without a source or a reference screen does not exist.
+> (Roman in your Pocket `products/README.md`). A row here without a source or a reference screen does not exist.
 > Only the product owner edits this file; builds and reviews propose changes.
 >
 > **Names:** Dr.ABC Application · Dr.ABC app · DoktorABC app · DoktorABC mobile · doktorabc-mobile ·
