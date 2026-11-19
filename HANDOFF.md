@@ -7,26 +7,26 @@ briefly. Rule names, IDs and severity stay English.
 
 | Repository | Visibility | What |
 |---|---|---|
-| `gorelikroman/design-critic-core` | shareable | **The critic.** Product-neutral: no product or company is named anywhere, history included. Plugin `design-critic@design-critic-core`. English only (`scripts/check_skill.py` enforces it). |
-| `gorelikroman/design-critic-products` | private (this one) | **Our products.** Product packs (`plugins/design-critic-<slug>/`), the Testplane pilot, presentations, this note. |
+| `gorelikroman/roman-in-your-pocket` | shareable | **The critic.** Product-neutral: no product or company is named anywhere, history included. Plugin `roman-in-your-pocket@roman-in-your-pocket`. English only (`scripts/check_skill.py` enforces it). |
+| `gorelikroman/roman-in-your-pocket-products` | private (this one) | **Our products.** Product packs (`plugins/roman-in-your-pocket-<slug>/`), the Testplane pilot, presentations, this note. |
 | `gorelikroman/design-critic` | private, legacy | The repository the core was split from. Its history holds the Reboost layer. Superseded by the two above; keep it read-only. |
 
 `gorelikroman/beluga-ds` (the Reboost design system) is read-only for agents.
 
 ## Read first
 
-1. design-critic-core `README.md` and `SKILL.md` — modes, language, product lookup, precedence.
-2. design-critic-core `products/README.md` — layers and how a pack is built.
-3. design-critic-core `notes/owner-decisions-2026-09-26.md` — the owner's decisions.
-4. `plugins/design-critic-reboost/skills/product-layer/product.md` — the only product so far.
+1. roman-in-your-pocket `README.md` and `SKILL.md` — modes, language, product lookup, precedence.
+2. roman-in-your-pocket `products/README.md` — layers and how a pack is built.
+3. roman-in-your-pocket `notes/owner-decisions-2026-09-26.md` — the owner's decisions.
+4. `plugins/roman-in-your-pocket-reboost/skills/product-layer/product.md` — the first product; `plugins/roman-in-your-pocket-drabc-app/` is the second.
 5. `visual-testing/README.md` — the Testplane pilot and its results.
 
 ## Settled rules
 
 - **The core never names a product or a company.** Anything about Reboost, DoktorABC, the
   mobile app or our company goes to this repository.
-- The core lookup order: installed packs (`design-critic-<slug>:product-layer`), then the
-  core's `products/*/`, then the working repository's `.design-critic/`. A product is never
+- The core lookup order: installed packs (`roman-in-your-pocket-<slug>:product-layer`), then the
+  core's `products/*/`, then the working repository's `.roman-in-your-pocket/` (or the older `.design-critic/`). A product is never
   guessed: with no name and no repository layer, universal rules only.
 - Reply in the language of the request; IDs, severity and state names stay English.
 - Before pushing to the core: `python3 scripts/check_skill.py`.
@@ -37,7 +37,7 @@ briefly. Rule names, IDs and severity stay English.
    from Figma and tokens, key screens, decisions log; the mobile app adds iOS and Android
    rules (lenses 12, 14). Waiting on the owner for Figma libraries, tokens and 5–10 reference
    screens per product. DoktorABC is medical: overshoot and bouncy easing are blocking there.
-2. **Browser extension** for QA and reviews: run design-critic-core `scripts/live-checks.js`
+2. **Browser extension** for QA and reviews: run roman-in-your-pocket `scripts/live-checks.js`
    on the open page, highlight findings, compare with the Figma frame, file a bug from
    `templates/bug-report.md`. The checks already ran on all 349 Reboost stories
    (`visual-testing/`).

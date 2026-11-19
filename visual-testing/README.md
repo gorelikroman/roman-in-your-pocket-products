@@ -5,7 +5,7 @@ Two automated passes over every Storybook story, at two widths (desktop 1280, ph
 | Pass | Question | Tool | Output |
 |---|---|---|---|
 | **visual** | what changed since the reference? | `@testplane/storybook`: one screenshot test per story, `assertView` against a reference image | Testplane HTML report: reference, current, diff; accept or reject per image |
-| **layout** | what is broken now, whatever the reference? | `tests/layout.testplane.js`: `checks/live-checks.js` (a copy of design-critic-core `scripts/live-checks.js`) + axe-core inside every story | one JSON per story and browser, `reports/<product>/layout-summary.md` grouped by catalog ID |
+| **layout** | what is broken now, whatever the reference? | `tests/layout.testplane.js`: `checks/live-checks.js` (a copy of roman-in-your-pocket `scripts/live-checks.js`) + axe-core inside every story | one JSON per story and browser, `reports/<product>/layout-summary.md` grouped by catalog ID |
 
 Then the critic triages: a changed image or a finding is read with the review method and the
 product layer, and becomes an accepted change, a filed defect (`templates/bug-report.md`) or a

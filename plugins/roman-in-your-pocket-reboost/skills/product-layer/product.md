@@ -1,6 +1,6 @@
 # Product layer — Reboost
 
-> Loaded on top of the universal rules whenever work concerns Reboost (design-critic `products/README.md`).
+> Loaded on top of the universal rules whenever work concerns Reboost (Roman in your Pocket `products/README.md`).
 > Only the product owner edits this file; builds and reviews propose changes.
 >
 > **Names:** Reboost · reboost · Reboost UI Kit · beluga-ds · reboost-ui · reboost-checkout ·
@@ -38,7 +38,7 @@ Which handbook files each mode reads (all under `docs/design-handbook/`):
 `prd-to-figma` (PRD → brief → UI schema → Figma → critic), `reboost-mockup` (one screen, popup
 or edit in Figma), `reboost-review` (the owner's review method against §4b and `09`),
 `reboost-setup` (Figma MCP and access check), `figma-add-icon`, `review-board`. Inside that
-repository they own the Figma mechanics (`use_figma` and the library); design-critic brings
+repository they own the Figma mechanics (`use_figma` and the library); Roman in your Pocket brings
 the universal method and the other roles' modes (spec, test, code review). Both judge against
 the same handbook. `refero-design` is for tasks with no Reboost pattern, never primary.
 

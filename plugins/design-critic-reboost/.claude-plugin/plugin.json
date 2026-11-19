@@ -1,8 +1,0 @@
-{
-  "name": "design-critic-reboost",
-  "version": "1.0.0",
-  "description": "Reboost product layer for design-critic: design system sources, patterns, voice, hard rules and the decisions log.",
-  "author": {
-    "name": "gorelikroman"
-  }
-}

@@ -1,7 +1,7 @@
 {
-  "name": "design-critic-visual-testing",
+  "name": "roman-in-your-pocket-visual-testing",
   "private": true,
-  "description": "Pilot: screenshot regression and live layout checks on a Storybook, with findings mapped to the design-critic catalog",
+  "description": "Pilot: screenshot regression and live layout checks on a Storybook, with findings mapped to the Roman in your Pocket catalog",
   "scripts": {
     "visual": "testplane --storybook",
     "visual:update": "testplane --storybook --update-refs",

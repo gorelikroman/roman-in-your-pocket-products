@@ -1,6 +1,6 @@
 # Design decisions log — Dr.ABC Application
 
-> The project's own yardstick, accrued from reviews and decision boards. The `design-critic` skill
+> The project's own yardstick, accrued from reviews and decision boards. The `roman-in-your-pocket` skill
 > carries the universal rules (lenses 01–14 and the catalog); everything specific to this product —
 > archetypes, named components, colour and type roles, tolerated exceptions — lives here.
 > A row without a reference screen does not exist. Lifecycle: `method/review-method.md` §5.
@@ -236,7 +236,7 @@ HowItWorks `4200:4493`. Deprecated: TabBar `3117:3568`, CardAction `3365:2467`.
 | MOT-5 | `Tabs` (and the deprecated `TabBar`) animate the change of the selected tab | owner request | `Tabs` `3100:2784` | — | confirmed (owner, 2026-11-17 · chat) |
 | MOT-6 | Every pressable gives feedback while the finger is down: colour plus a small scale that springs back; checkbox, radio and switch included | nothing changed under the finger on three controls | — | — | confirmed (owner, 2026-11-17 · chat: "do what you propose") |
 | MOT-7 | Dropdown lists and the calendar fade in and drop into place, leave faster; no bounce | they appeared and vanished in one frame | `Dropdown` `3084:2367`, `DatePicker` `3085:2699` | — | confirmed (owner, 2026-11-17 · chat: "do what you propose") |
-| MOT-8 | A change from the keyboard is a cut; nothing animates on first paint; reduced motion = instant change with the state still visible | design-critic lens 09 | — | — | candidate |
+| MOT-8 | A change from the keyboard is a cut; nothing animates on first paint; reduced motion = instant change with the state still visible | Roman in your Pocket lens 09 | — | — | candidate |
 
 ## Open questions for the project owner
 

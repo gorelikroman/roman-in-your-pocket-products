@@ -12,7 +12,7 @@ const PRODUCT = process.env.PRODUCT || 'reboost';
 const ONLY = process.env.STORIES ? new RegExp(process.env.STORIES) : null;
 const OUT = path.resolve(__dirname, '..', 'reports', PRODUCT, 'findings');
 
-// checks/live-checks.js is a copy of design-critic-core scripts/live-checks.js; LIVE_CHECKS points elsewhere.
+// checks/live-checks.js is a copy of roman-in-your-pocket scripts/live-checks.js; LIVE_CHECKS points elsewhere.
 const CHECKS = fs.readFileSync(process.env.LIVE_CHECKS || path.resolve(__dirname, '../checks/live-checks.js'), 'utf8');
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const AXE_RULES = ['color-contrast', 'button-name', 'link-name', 'aria-command-name', 'aria-toggle-field-name',
@@ -55,7 +55,7 @@ describe('layout', () => {
 
       await browser.execute(CHECKS);
       const result = await browser.execute(
-        (touch, axe, reflow) => window.designCriticChecks({ root: document.body, touch, axeResults: axe, reflow }),
+        (touch, axe, reflow) => window.romanChecks({ root: document.body, touch, axeResults: axe, reflow }),
         browserId === 'mobile', axeResults, layout === 'fullscreen',
       );
 

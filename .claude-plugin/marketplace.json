@@ -1,19 +1,19 @@
 {
-  "name": "design-critic-products",
+  "name": "roman-in-your-pocket-products",
   "owner": {
     "name": "gorelikroman"
   },
-  "description": "Private product packs for design-critic: one plugin per product.",
+  "description": "Private product packs for Roman in your Pocket: one plugin per product.",
   "plugins": [
     {
-      "name": "design-critic-reboost",
-      "source": "./plugins/design-critic-reboost",
-      "description": "Reboost product layer for design-critic"
+      "name": "roman-in-your-pocket-reboost",
+      "source": "./plugins/roman-in-your-pocket-reboost",
+      "description": "Reboost product layer for Roman in your Pocket"
     },
     {
-      "name": "design-critic-drabc-app",
-      "source": "./plugins/design-critic-drabc-app",
-      "description": "Dr.ABC Application (mobile app) product layer for design-critic"
+      "name": "roman-in-your-pocket-drabc-app",
+      "source": "./plugins/roman-in-your-pocket-drabc-app",
+      "description": "Dr.ABC Application (mobile app) product layer for Roman in your Pocket"
     }
   ]
 }

@@ -1,7 +1,7 @@
 // Turns reports/<product>/findings/<browser>/<story>.json into
 // reports/<product>/layout-summary.md: findings grouped by rule (catalog ID,
 // lens entry, severity), each rule with the stories and browsers it hits and
-// the most frequent elements, ready for a design-critic review to triage.
+// the most frequent elements, ready for a Roman in your Pocket review to triage.
 
 const fs = require('fs');
 const path = require('path');
