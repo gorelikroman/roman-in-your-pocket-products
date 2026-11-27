@@ -1,8 +1,8 @@
-<!-- Snapshot of beluga-ds docs/design-handbook/09-decisions.md at commit 9ccb91b, taken
-     2026-09-27. The canonical log lives in beluga-ds; edit it there and refresh this copy.
-     Relative links below (05-design-rules.md, 13-…, 10-fix-backlog.md, 08-design-review/)
-     point into beluga-ds/docs/design-handbook/. Node ids (1:877 …) are in the review
-     collection file vdFkmYUE5h0ndTS9pfc2k8 unless another file is named. -->
+<!-- Snapshot of beluga-ds docs/design-handbook/09-decisions.md at commit 849f214f, taken
+     2026-11-27 by scripts/sync_reboost.py. The canonical log lives in beluga-ds; edit it there and
+     refresh this copy. Relative links below (05-design-rules.md, 13-…, 16-…, 17-…, 18-…,
+     10-fix-backlog.md, 08-design-review/) point into beluga-ds/docs/design-handbook/. Node ids
+     (1:877 …) are in the review collection file vdFkmYUE5h0ndTS9pfc2k8 unless another file is named. -->
 
 # Reboost Design Decisions Log — by Archetype
 
@@ -110,7 +110,7 @@
 | Bad news (out of stock) — a calm white card at the top, no red and no icon; the alternative right below it | don't scare, offer a path | `1:5256` | — | candidate (D) |
 | Plan format: `PlanMarketingCard` — H3 → caption `text/accent` → first line `UI/Feature` bold → benefits `Label/Primary` → savings `text/success` → "Dosage summary" link on the left, price on the right → CTA inside the card | comparing two paths "side by side" | `1:6668`, `1:7203` | lavender; **two primaries on one screen** | **decision-needed** |
 | Duration: `PlanOptionCard` radio + a pre-selected recommended option with a dark "Most popular" badge + one CTA naming the step ("Shipping & payment") | a choice within one path — one CTA | `1:6725`, `1:7261` | "over 3 months" on the 6-month option | candidate (D) |
-| Explainer popup: H3 + ✕ → paragraph → bold lead fact → "icon-stack + caption + text" lines → one "Got it" button; on desktop — the same popup, centered | "what this means" without leaving | `1:6764`, `1:6904`, `1:7046` | paragraphs in `UI/Button`, 100% scrim | candidate (D) |
+| Explainer popup: H3 + ✕ → paragraph → bold lead fact → "icon-stack + caption + text" lines → one "Got it" button; on desktop — the same popup, opened from the bottom like on mobile (400 wide, docked; rule of 2026-09-29) | "what this means" without leaving | `1:6764`, `1:6904`, `1:7046` | paragraphs in `UI/Button`, 100% scrim | candidate (D) |
 | Dark filled icon circles in the marketing education section ("How do GLP-1s work?") | | `1:4775`, `1:4873` | against the "Icon Badge is light" rule | **decision-needed** |
 
 ## 3f. Checkout and authentication (cluster E)
@@ -195,6 +195,33 @@ the former is marked as a draft), the legacy `Coupon` and `Skip / Sign in` from 
 headers, different fields, and the "degraded copy" of the password-reset screen. **As long as the two kits coexist,
 every rule about components has two readings.** Resolution — question 62.
 
+## 3l. My Account on desktop (2026-09-27 … 09-29)
+
+Details, node ids and scripts: [`17-my-account-desktop.md`](17-my-account-desktop.md).
+
+| Decision | Why | Reference | Violations | Status |
+|---|---|---|---|---|
+| Desktop page = frame 1240, header 969 centred, left rail 173, content column **520** (same as the checkout column), rail ↔ column 56 (`gap/5xl`) | the owner's concept; one column width across funnel and account | concept `942:32204`, template `2130:30709` | — | confirmed (owner) |
+| Rail is **one level**; depth is shown by the «‹ Parent» link, no second level and no breadcrumbs | sections go deep (Settings), a second menu level would need a tree | `Navigation/AccountRail` `2078:11321` | — | confirmed (owner 2026-09-28) |
+| Popups on desktop are **bottom sheets** pinned to the bottom edge (top corners 24, bottom 0), not centred modals | same behaviour as mobile; matches the checkout Pharmacy Partners popup | fn `4057:26199`, kit section `2130:30708` | — | confirmed (owner 2026-09-27) |
+| Sticky bars / buttons stay sticky (bottom of the viewport, column-wide), snackbars float at the top under the header; neither lives in the auto-layout body | a sticky element is not content; in the body it scrolls away and breaks the gap rhythm | desktop pairs in `1:9647`, `61:6987`, `1:4591`… | — | confirmed (owner 2026-09-28) |
+| Every mobile screen has its desktop (1240) right next to it; group brackets (green / blue) stretch over the pairs | compare the two side by side, hand off in pairs | sections above | — | confirmed (owner request 2026-09-28) |
+| Unsaved-changes warning = `Overlays/Popup` sheet «Leave without saving?» — A «Keep editing» + «Leave without saving» (default), B «Save and leave» for short forms; not for email/password | no new component; never lose a form by a stray click on the rail or «‹ Parent» | masters `2111:34215`, `2111:34283` | — | candidate (agent proposal) |
+| Home on desktop must carry more than one "What's new" block: active subscription, order in transit / unfinished order, next reminder, menu by sections; 8 variants built | the concept Home is empty on the right and at the bottom | section `2156:30134`, artifact `9ZVPaMkdKhHbfvj8sKqrQZ` | — | **decision-needed** (recommended V5) |
+
+## 3m. My Account: PM comments and accepted variants (2026-09-29)
+
+Details, node ids, recipes: [`18-my-account-pm-board.md`](18-my-account-pm-board.md).
+
+| Decision | Why | Reference | Violations | Status |
+|---|---|---|---|---|
+| Notifications: the *Order & Plan* card shows an **Email** row that is always disabled (greyed `Forms/Switch State=Disabled`) with an info icon by the title; tooltip «Order emails can’t be turned off» (`Core/Tooltip`) | order-related email cannot be switched off, but the channel must be visible | Notifications `1:5372` … `2139:43867`, tooltip states `2302:47607/2302:47680` | | accepted |
+| Notifications: *Medication reminders* has **no channel toggles**, only a line of explanation and the button «Manage reminders» to the reminder flow | channels are chosen per reminder; one place controls one thing | same screens | | accepted (owner: "apply this variant") |
+| ID verification on My Order: a solid **lavender** card (V2d, `color/lavender/600`) with the identity illustration above the order tracker; flow = 2 bottom-sheet popups («Verify your identity», «Add your photo ID» with the existing `Forms/FileUpload` Subject=Id) | the green hero blended with the subscription banner; lavender is the widget colour of the checkout | `68:7435`, `2136:38072`, popups `2305:47411/47569/47708/47872` | lavender has no semantic token; illustration is not in the kit | accepted ("I choose this variant") |
+| *Lab results* block on My Order: exactly **one** result (testosterone), document icon + name + date · PDF · size + download icon button, mint `surface/success` fill, after *Medication Instructions* | matches the doktorabc pattern the PM named | `68:7435`, `2136:38072` | position and click behaviour open | accepted |
+| Desktop section cards (Shipping, Pharmacy): title `Heading/Subheading` 22, gap `gap/lg`, top padding `padding/md`, bottom `padding/xl`; Payment title on one line | owner's edit of the reference block, applied to all such sections | 22 desktop pages | | applied |
+| Support order sheet «Which order is this about?»: option shows order id + category (A: id as title; B: product title + «#id · category») | PM: "per order id and category name" | board `2259:39963…40455` | | **dropped by the owner** — sheet unchanged |
+
 ## 4. Empty state
 
 | Decision | Why | Reference | Violations | Status |
@@ -264,3 +291,17 @@ every rule about components has two readings.** Resolution — question 62.
 64. Waiting screen with no trust footer — exception or oversight?
 65. "Your dosage" popup: does the choice apply on tap, or is a "Save" button needed?
 66. Where's the canonical instance of help/privacy — in the questionnaire, or in the funnel?
+
+## Owner decisions — My Account prototype (2026-09-29)
+
+| Decision | Why | Where |
+|---|---|---|
+| A popup always opens from the bottom, on mobile and on desktop (centred horizontally, top corners 24; width 520 since the owner decision of 2026-09-29, was 400 — see §3m); never a centered modal | one behaviour on every breakpoint; matches the measured desktop twins | `AGENTS.md` rule 9, `popup.tsx` |
+| Desktop push / back transitions dim the whole page and move the page from the window edge, not inside the 520px column | the transition is a page-level event; a column-only dim reads as a glitch | `AGENTS.md` rule 10, `my-account-screen-recipe.md` §4 |
+| The desktop header pill is sticky; the rail sticks below it | navigation stays reachable on long pages (orders, guides) | `my-account-screen-recipe.md` §5 |
+| Order cards follow Figma widths: progress block 235 fixed, "Switch to a subscription" 186 fixed, "Re-order" 109 on mobile / flexible on desktop | measured from `68:7873` and `2136:36458` | `my-account-figma-coverage-home-orders.md` |
+| Figma quirks that look like mistakes (the copy icon at the far end of the "3 Items" order id) are not copied; noted here instead | a stretched hug width in the source, not a design | this table |
+
+
+### My Account desktop (2026-09-29)
+67-72 are listed in [`17-my-account-desktop.md`](17-my-account-desktop.md) §10: which Home variant, which widgets, rail on Home, HIPAA footer on desktop, publishing the rail and the warning to the kit, the warning inside sheets.

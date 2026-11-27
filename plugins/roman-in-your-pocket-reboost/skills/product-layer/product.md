@@ -6,31 +6,44 @@
 > **Names:** Reboost · reboost · Reboost UI Kit · beluga-ds · reboost-ui · reboost-checkout ·
 > helfy-platform-storybook — every name people use for this product in requests.
 >
-> Product owner: Roman · Design system owner: Roman · Last updated: 2026-09-27 ·
+> Product owner: Roman · Design system owner: Roman · Last updated: 2026-11-27 ·
 > Decisions log: `design-decisions.md` (this folder, a snapshot).
 
 ## 0. Source of truth — read this first
 
 This layer is a **portable summary**. The canonical source is the Reboost design handbook in
 the `gorelikroman/beluga-ds` repository (`docs/design-handbook/`, captured from the live Figma
-2026-09-07; typography decided 2026-09-15). This summary was taken from beluga-ds commit
-`9ccb91b` on 2026-09-27.
+2026-09-07; typography decided 2026-09-15; spacing 2026-09-28; My Account 2026-09-27 … 10-05).
+This summary was taken from beluga-ds commit `849f214f` on 2026-11-27 (handbook last changed
+2026-10-05). `source.json` in this folder records the commit; `scripts/sync_reboost.py` in the
+products repository compares it with beluga-ds and refreshes the layer.
 
 - **When the beluga-ds repository is available** (the working directory, or a clone): read
   the handbook files named below and trust them over this summary. If they disagree, the
   handbook wins; point out the drift so this layer gets refreshed.
 - **When it is not** (the desktop app, claude.ai, another repository): work from this file and
-  `design-decisions.md`; say "Product: Reboost (summary layer, beluga-ds@9ccb91b)".
-- **Refreshing this layer:** after the handbook changes, re-read it and update this file;
-  replace `design-decisions.md` with the new `09-decisions.md` under the same header comment,
-  with the new commit and date; bump the plugin version.
+  `design-decisions.md`; say "Product: Reboost (summary layer, beluga-ds@849f214f)".
+- **Refreshing this layer:** `python3 scripts/sync_reboost.py --beluga <path>` (products
+  repository) replaces `design-decisions.md` with the new `09-decisions.md`, records the commit,
+  bumps the version and lists the handbook chapters that changed; then update the prose of this
+  file for those chapters.
+- **Inside beluga-ds, chapter 20 binds the critic** (`20-design-critic-binding.md`, 2026-10-05):
+  the project log is `09-decisions.md` — never create a `design-decisions.md` there and never run
+  the bootstrap of the review method; the yardstick order is `05` §8 → `05` §4b + `09` → `15` →
+  `13` → `16` → `05` §9 → the lenses; a just-built mockup gets the **light mode** (lenses 01 · 04 ·
+  05 + 02 and the spacing check, a findings table in chat, blocking stops the handover), a review
+  the **full mode** (`reviews/<date>-<slug>/`, the decision board is the project's `review-board`
+  skill). Chapter 20 calls the critic by its former name `design-critic` and checks
+  `~/.claude/skills/design-critic/SKILL.md`; the critic is now Roman in your Pocket (plugin
+  `roman-in-your-pocket`) — read that name as this skill.
 
 Which handbook files each mode reads (all under `docs/design-handbook/`):
 
 | Mode | Read | Why |
 |---|---|---|
-| build | `15-pattern-library.md` (+ `15-patterns.json`) → `13-typography-roles-and-patterns.md` → `02-tokens.md` → `04-components.md` → `05-design-rules.md` | shell → blocks → atoms, type roles, tokens, components, laws |
-| review | `05-design-rules.md` §4b (archetypes), §8 (hard rules), §9 (critic checklist) → `09-decisions.md` | the product's confirmed yardstick and its open questions |
+| build | `15-pattern-library.md` (+ `15-patterns.json`) → `13-typography-roles-and-patterns.md` → `16-spacing.md` → `02-tokens.md` → `04-components.md` → `05-design-rules.md` | shell → blocks → atoms, type roles, gaps, tokens, components, laws |
+| review | `20-design-critic-binding.md` → `05-design-rules.md` §8 (hard rules), §4b (archetypes) → `09-decisions.md` → `15` → `13` → `16` → `05` §9 (critic checklist) | the binding, then the product's yardstick in its order, and its open questions |
+| My Account (any mode) | `17-my-account-desktop.md` → `18-my-account-pm-board.md` → `19-my-account-blockers.md` | desktop anatomy and porting rules, accepted PM variants, blocker notifications |
 | spec | `05-design-rules.md` §4b → `15-pattern-library.md` → `docs/error-states.md` | archetype anatomy, patterns, the error-state contract |
 | test | `05-design-rules.md` §8 → `docs/error-states.md` → `docs/upload-component-spec.md` → `10-fix-backlog.md` | blocking rules, state contracts, known defects |
 
@@ -54,7 +67,8 @@ the same handbook. `refero-design` is for tasks with no Reboost pattern, never p
 - **Patient variants:** `FTB-A` first time, no GLP-1 before; `FTB-B` switching from another
   provider; `RP` returning patient (refill).
 - **Platforms:** responsive web only. Every screen has two frames, mobile 375 and desktop
-  (920 / 924 / 1440); desktop is one centered 520 px column in the funnel. No native app.
+  (920 / 924 / 1440 in the funnel, 1240 in My Account), placed side by side; desktop content is
+  one 520 px column in the funnel and in the account. No native app.
 - **Users' state by surface** (from the 85-screen review):
 
 | Surface | Verb | State |
@@ -76,7 +90,7 @@ the same handbook. `refero-design` is for tasks with no Reboost pattern, never p
 | Source | Where | Notes |
 |---|---|---|
 | Component library (Figma) | "🇺🇸 UI KIT - reboost", file key `BvhK4O1XjvVipAAS7yZ1h3`, page `🧩 UI Kit` (`167:972`) | 224 components; the `Archive` page is not a source; "UX/UI Redesign" library variables are prohibited |
-| Product Figma files | funnel `42dzqhSYu8TNmywyhJJfOR` (page `✅ READY TO DEV`), questionnaires `OscW6YOfVFHkhDVHUYR2Ro`, My Subscription `v39wDgVX92yl64SGbrpQEa`, Settings / My Account `kdVxqJLPU5UaZoiAKIudlF`, review collection `vdFkmYUE5h0ndTS9pfc2k8` | map: `docs/design-handbook/01-figma-map.md` |
+| Product Figma files | funnel `42dzqhSYu8TNmywyhJJfOR` (page `✅ READY TO DEV`), questionnaires `OscW6YOfVFHkhDVHUYR2Ro`, My Subscription `v39wDgVX92yl64SGbrpQEa`, Settings / My Account `kdVxqJLPU5UaZoiAKIudlF`, **My Account ALL** `cG25dEPqZo1coNEABUAIAk` (page `fo Review PM` `1:4`: mobile + desktop pairs, the PM board, blockers), review collection `vdFkmYUE5h0ndTS9pfc2k8` | map: `docs/design-handbook/01-figma-map.md` |
 | Design tokens | `packages/ui/src/styles/globals.css` (+ `typography.css`, `fonts.css`); Figma collections 01 Primitives, 02 Semantic, 03 Sizing, 04 Category | "source of truth = Figma Variables"; snapshot in `02-tokens.md` |
 | Component code | `@sml-hub/reboost-ui` (`packages/ui`), `@sml-hub/reboost-checkout` (`packages/checkout`), GitHub Packages | consuming: `CONSUMING.md`; code rules: `AGENTS.md` |
 | Component docs | Storybook `apps/storybook` (`pnpm storybook`, port 6006); no deployed URL | groups: Primitives, Molecules, Domain, Commerce, Foundations, Questionnaire, Pilot Screens, Handoff / Checkout |
@@ -95,7 +109,7 @@ primitives or hex):
 | Canvas and surfaces | `surface/background` (warm cream), `surface/card`, `surface/muted`, `surface/accent`, `surface/brand`, `surface/brand-subtle`, `surface/inverse` |
 | Text | `text/main` (dark forest green, not black), `text/secondary`, `text/tertiary`, `text/disabled`, `text/heading`, `text/brand` |
 | Borders | `border/main` (warm hairline), `border/input`, `border/selected`, `border/focus` |
-| Spacing | `padding-*` and `gap-*` 3xs…5xl = 2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 (gap 6xl 64); ≥ 768 px the large steps grow; off-ladder values (5, 9, 10, 14, 18, 28, 30, 36, 60) do not exist |
+| Spacing | `padding-*` and `gap-*` 3xs…5xl = 2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 (gap 6xl 64); ≥ 768 px the large steps grow (the `03 Sizing` Mobile / Desktop mode); off-ladder values (5, 9, 10, 14, 18, 28, 30, 36, 60) do not exist. Which gap goes between two neighbours: §6 · Spacing between neighbours |
 | Type | role styles from `13-typography-roles-and-patterns.md` (`Heading/Title`, `Heading/Lead`, `Heading/Heading` 22, `Display/Stat`, `Body/Body`, `Body/Caption`, `Body/Legal`, `UI/Button`, `UI/Option`, `UI/Input`, …); code classes `ds-*` |
 | Radii | `radius/*` 3xs…2xl = 2 · 4 · 6 · 8 · 12 · 16 · 20 · 24, `full`; cards r = 16 |
 | Elevation | `shadow/xs` focus · `sm` resting cards · `md` popovers · `lg` dialogs and sheets · `xl` toasts |
@@ -158,12 +172,15 @@ Full catalogue: `04-components.md` (Figma node ids, properties) and `COMPONENT-M
 | Inline warning | `Alert` type warning; a critical note inside a card = callout on `surface/muted` | a toast (Sonner) as an inline warning; an Alert inside a card |
 | Action failed, user stays | `ErrorToast` (sage badge, never red; one at a time) | a red toast; a page |
 | User cannot continue | `ErrorPage` (error / not-found) | a toast |
-| Parameterised action, transitional state | `Popup` (bottom sheet on mobile, centered on desktop) | a separate page |
+| Parameterised action, transitional state | `Popup` — a **bottom sheet at every breakpoint**: docked to the bottom edge, top corners 24, bottom 0, slides up; on desktop 520 wide, centred horizontally (owner 2026-09-27/29) | a separate page; a centred modal |
+| Blocker notification in My Account (payment failed, verify identity, doctor needs info, refill questions) | `Feedback/NotificationStrip` — **always one** strip, by priority payment → identity → doctor → refill; first item of the content column; the whole strip is tappable, not dismissible; on Home they are ordinary "What's new" cards, no accent (`19` §0) | several strips; an amber bar on Home |
+| A control the user cannot change (e.g. order emails) | shown **disabled, not hidden**: `Forms/Switch State=Disabled` + `information-circle` 16 after the label + `Core/Tooltip` with the reason ("Order emails can’t be turned off") | hiding the row |
+| Unsaved changes when leaving a form | `Overlays/Popup` sheet "Leave without saving?": primary "Keep editing" + red outline "Leave without saving" (candidate, `17` §5); not after Save, Cancel, no edits or auto-save | a new component; losing the form silently |
 | Irreversible confirmation | `AlertDialog` | a Popup with a red primary for a reversible action |
 | Side drawer | `Sheet` (left / right only) | Sheet as a bottom panel |
 | Empty list | `Empty` (sage line illustration 160–180, heading, one sentence, primary with the action icon) | "No data" |
 | Loading | `Spinner` / `Skeleton`; waiting screen = ring around the monogram + the result line | a hand-drawn spinner |
-| Upload | `FileUpload` (id / prescription / bodyPhoto / document; empty, uploading, success, error, disabled; errors inline) | a modal mid-questionnaire |
+| Upload | `FileUpload` (id / prescription / bodyPhoto / document; empty, uploading, success, error, disabled; errors inline) — also in the My Account ID-verification popup (`Subject=Id`) | a modal mid-questionnaire; a new dropzone |
 | Card layout | `CardBase` (padding 16, 12 on top with an eyebrow) | `Core/Card` (20) for composites |
 | Checkout, subscription, account blocks | `Commerce/*` (`OrderSummaryCard`, `PlanOptionCard`, `PaymentMethodRow`, `CouponRow`, `KeyValue`, …) | rebuilding them from primitives |
 | Edit vs navigate | pencil = edit in place; chevron = navigate | |
@@ -177,10 +194,10 @@ screens: `05-design-rules.md` §4b; reasoning and reference nodes: `design-decis
 
 | Shell | Anatomy (short) |
 |---|---|
-| S1 Account page | hero gradient → floating white pill header → breadcrumb ("‹ Parent" deeper) → `Heading/Title` → `Heading/Lead` (≤ 2 lines) → content; no primary on a dashboard, actions live in the card that owns them |
+| S1 Account page | hero gradient → floating white pill header → breadcrumb ("‹ Parent" deeper) → `Heading/Title` → `Heading/Lead` (≤ 2 lines) → content; no primary on a dashboard, actions live in the card that owns them. **Desktop** (`17` §2): frame 1240, header pill 969 centred and sticky, header → page 56, left rail `Navigation/AccountRail` 173 (**one level**, depth shown by "‹ Parent", no breadcrumbs), rail ↔ column 56, content column **520**, back link → title 16, title 44 → content 40, blocks 32, the HIPAA `Footer` last in the column on **every** desktop page (gap 40) |
 | S2 Funnel step | dark hero gradient → `Navigation/Header` → centered title → `Heading/Subtitle` → content → primary → "Skip" underlined link → trust footer (HIPAA line + badges + Pharmacy Partners); desktop one 520 column |
 | S3 Questionnaire step | coupon → header (‹, segmented progress without "N of M", ⋯) → QuestionTag (follow-ups, the only amber spot) → question (22, left) → helper → options → Skip / Sign in → sticky primary; no trust footer on mobile |
-| S4 Popup | icon → `Heading/Heading` 22 (no exceptions, never a second Title) → subtitle → buttons |
+| S4 Popup | icon → `Heading/Heading` 22 (no exceptions, never a second Title) → subtitle → buttons; a bottom sheet on every breakpoint, desktop 520 wide, content fills it (472); a popup screen in Figma is a viewport crop (1240 × 1080, mobile 375 × 840) with the sheet docked to the bottom |
 | S5 In-page state | Heading 22 centered + caption |
 | S6 Full-page error / 404 | `ErrorPage` |
 
@@ -194,7 +211,46 @@ action** (Popup: context card on `surface/accent` → one sentence on consequenc
 reversibility → options with consequence captions → primary + ghost; reversible = green,
 red only for irreversible) · **account forms** (one card, floating labels, locked values as
 KeyValue with 🔒 ⓘ, "(Optional)" in the label) · **empty state** · **breakscreen** (a fact
-screen; see §8 on its two dominants).
+screen; see §9 on its two dominants).
+
+**My Account** (`17`, `18`, `19`): mobile → desktop porting keeps sticky bars and buttons out
+of the auto-layout body (pinned to the viewport bottom, column-wide), snackbars float at the
+top under the header (480 wide on desktop), chats become a 520 × 760 panel. Section cards
+(Shipping, Pharmacy, Medication Instructions, Lab results): gap `gap/lg`, top `padding/md`,
+bottom `padding/xl`, header row 44 with the title centred, title `Heading/Subheading` (22 desktop
+/ 18 mobile); Payment breakdown keeps a one-line title. FAQ and "Need help?" blocks: vertical
+padding 16 on every page. Status and empty screens: the button sits right under the message
+(`gap/xl`), not pinned to the bottom. ID verification on My Order: a solid lavender card (V2d)
+above the order tracker → two bottom-sheet popups, the second with `Forms/FileUpload`
+`Subject=Id`. Lab results: one row (document icon, name, date · PDF · size, download icon
+button) on `surface/success`. Notifications: *Order & Plan* shows a locked Email row with a
+tooltip; *Medication reminders* has no channel toggles, only a line and "Manage reminders".
+
+### Spacing between neighbours (`16-spacing.md`, rule v1.1, owner 2026-09-27/28)
+
+For `itemSpacing` in auto-layout this chapter wins over `05` §3. Pick the gap by **how the two
+neighbours relate**, never by eye or by their size; bind it to `gap/*` (`03 Sizing`), and the
+Mobile / Desktop mode gives the number.
+
+| Relation | Meaning | M | D | Token |
+|---|---|---|---|---|
+| attached | part of one element: label over value, field → helper | 4 | 4 | `gap/2xs` |
+| inline | side by side in a row: icon + text, button + button, tabs | 8 | 8 | `gap/sm` |
+| group | equal repeats: list rows, cards in a list, a button stack, fields in a row | 12 | 12 | `gap/md` |
+| heading | a heading over its content; a question over a field; "Back" → screen title | 16 | 16 | `gap/lg` |
+| block | different groups inside a block: a stack of form fields, lead → fields | 24 | 32 | `gap/2xl` |
+| section | block → block; content → actions; two sections in one card | 32 | 40 | `gap/3xl` |
+| page | header → content; page sections | 48–64 | 56–80 | `gap/5xl` / `gap/6xl` |
+
+Shifts (only these): inline with a badge ≥ 28 → 12, with a thumbnail ≥ 44 → 16; group of items
+≥ 250 high → 16; a small heading inside a card on mobile → 12; a single large heading ≥ 22 over
+content ≥ 200 → section 32 / 40; price → `Body/Legal` footnote 16 / 24. **Text over text** uses
+the visible distance instead (half-leadings subtracted, snapped to 0 / 2 / 4 / 8 / 12 / 16): e.g.
+`Heading/Heading` 22 → text = 12, Title / H2 → text = 16, paragraph → paragraph = 4, subheading
+16–18 → caption = 4. Zero: table rows, segments, carousel arrows; `auto` to push a CTA down.
+Invariants: **inner gap ≤ outer gap**; one container, one relation (split mixed ones); mobile and
+desktop use the same variable, never a bigger token "because it is wider"; an icon or button next
+to text keeps 12 for long content.
 
 ## 7. Hard rules (blocking for Reboost)
 
@@ -208,8 +264,9 @@ From `05-design-rules.md` §8, `AGENTS.md` and the policies; a violation is `deb
 4. Every text layer uses a role style from `13-typography-roles-and-patterns.md`; bare text,
    Poppins and Inter are prohibited; text inside buttons, options and tabs keeps its `UI/*`
    style. Code: typography only via `ds-*` classes.
-5. Radii only from `radius/*` (code: `rounded-xl` / `rounded-2xl` banned — but see §8).
-6. At most one solid-primary button and one Title (H1) per screen.
+5. Radii only from `radius/*` (code: `rounded-xl` / `rounded-2xl` banned — but see §9).
+6. At most one solid-primary button and one Title (H1) per screen — and no other competing
+   dominant (owner decision 2026-09-26): anything as loud as the dominant is blocking.
 7. Every input and dropdown has a label; a placeholder is not a label.
 8. Mobile first; tap targets ≥ `tap/min`; two frames per screen (mobile + desktop), paired names
    `{StepCode} / {platform} / {variant}`.
@@ -219,7 +276,9 @@ From `05-design-rules.md` §8, `AGENTS.md` and the policies; a violation is `deb
 12. Code: errors via `aria-invalid` / `FormField error=`; checkout components never route,
     fetch or format money and dates (they arrive as strings).
 
-Product warnings (listed, a human accepts or rejects): inner gap ≥ outer gap; missing
+Product warnings (listed, a human accepts or rejects; `05` §8): inner gap ≥ outer gap (the
+critic still reports this one as blocking — it is a universal blocking rule, and `20` §4 leaves it
+open for the owner); missing
 required states (loading / error / empty / success); weak desktop coverage; no alt on an
 image; no name on an icon button; line length outside 40–70; a centered element hanging in
 nothing; more than 5 text styles on one screen; an element "not from here".
@@ -273,4 +332,17 @@ rule or the universal one:
   format (Q13), "Pay – $509" vs "Continue" (Q16), secondary style in popups (Q18), consent with
   no control (Q21), disqualify terminal not drawn (Q22), sheet vs popup (Q28), large-number
   format (Q29), "Close" primary or outline (Q61).
+- My Account (`17` §10, `18` §4): which desktop Home (V1–V8 built, V5 / V8 recommended; Q67),
+  which widgets (Q68), rail on Home (Q69), HIPAA footer on desktop (Q70, since applied on every
+  desktop page), publishing the rail and the unsaved-changes warning to the kit (Q71), the warning
+  inside sheets (Q72); ID-verification result states not drawn; Lab results position and click
+  behaviour; the identity illustration is not a kit component and lavender has no semantic token
+  (the ID card binds the primitive `color/lavender/600`, against hard rule 2 and the "no lavender"
+  character of §3 — an owner-accepted exception for this card).
+- Spacing (`16` §7): label over value 0 or 4; accordions and step timelines; the stat exception
+  binds the primitive `space/24` (against `02-tokens.md`); `05` §3 contradicts invariant 1 and
+  awaits an edit. Gap conformance on 2026-09-28: 79 % (kit 57 %, My Account 78 %, funnel 86 %,
+  questionnaires 69 %).
+- Kit changes of 2026-09-29 (section cards, desktop Popup 520, component descriptions) are made
+  but **not published**; `Feedback/NotificationStrip` is in the kit and in code.
 - Fix backlog of confirmed debt (copy, maths, style): `10-fix-backlog.md`.

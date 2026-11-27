@@ -63,3 +63,16 @@ Next in line: the DoktorABC website.
 
 Commit the change, bump `version` in the pack's `plugin.json`; teammates run
 `claude plugin update roman-in-your-pocket-reboost@roman-in-your-pocket-products`.
+
+**Reboost follows beluga-ds.** The Reboost pack summarises the design handbook in
+`gorelikroman/beluga-ds`; `source.json` in the pack records the commit it was taken from.
+After the handbook changes:
+
+```bash
+python3 scripts/sync_reboost.py --beluga ../beluga-ds --check   # what changed; exit 1 when behind
+python3 scripts/sync_reboost.py --beluga ../beluga-ds           # refresh the log, the commit, the version
+```
+
+The script replaces `design-decisions.md` with the new `09-decisions.md` and lists the chapters
+whose changes `product.md` must absorb; update that prose (or ask the critic to), commit and
+push. The Dr.ABC app pack has no outside source: it is the handbook itself.
