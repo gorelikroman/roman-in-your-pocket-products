@@ -1,6 +1,6 @@
 # Roman in your Pocket products
 
-Private companion to [roman-in-your-pocket](https://github.com/gorelikroman/roman-in-your-pocket):
+Companion to [roman-in-your-pocket](https://github.com/gorelikroman/roman-in-your-pocket):
 everything that belongs to our own products and must not travel with the shareable critic.
 
 | Path | What |

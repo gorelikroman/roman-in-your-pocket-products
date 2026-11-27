@@ -3,7 +3,7 @@
   "owner": {
     "name": "gorelikroman"
   },
-  "description": "Private product packs for Roman in your Pocket: one plugin per product.",
+  "description": "Product packs for Roman in your Pocket: one plugin per product.",
   "plugins": [
     {
       "name": "roman-in-your-pocket-reboost",

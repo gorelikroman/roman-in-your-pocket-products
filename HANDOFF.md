@@ -8,7 +8,7 @@ briefly. Rule names, IDs and severity stay English.
 | Repository | Visibility | What |
 |---|---|---|
 | `gorelikroman/roman-in-your-pocket` | shareable | **The critic.** Product-neutral: no product or company is named anywhere, history included. Plugin `roman-in-your-pocket@roman-in-your-pocket`. English only (`scripts/check_skill.py` enforces it). |
-| `gorelikroman/roman-in-your-pocket-products` | private (this one) | **Our products.** Product packs (`plugins/roman-in-your-pocket-<slug>/`), the Testplane pilot, presentations, this note. |
+| `gorelikroman/roman-in-your-pocket-products` | public (this one) | **Our products.** Product packs (`plugins/roman-in-your-pocket-<slug>/`), the Testplane pilot, presentations, this note. |
 | `gorelikroman/design-critic` | private, legacy | The repository the core was split from. Its history holds the Reboost layer. Superseded by the two above; keep it read-only. |
 
 `gorelikroman/beluga-ds` (the Reboost design system) is read-only for agents.
